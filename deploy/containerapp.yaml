@@ -1,0 +1,60 @@
+# The app's revision template on Azure Container Apps (M6 item 3), applied by scripts/deploy.sh
+# with `az containerapp update --yaml`: a PATCH, so what is not here (ingress on port 8000, the
+# registry pulled by the system identity, single revision mode) stays as `az containerapp
+# create` set it. deploy.sh fills in ${IMAGE} and ${SUFFIX} (the commit's short sha), quoted: a
+# sha of digits only would be a number, one starting with 0 an octal one.
+tags:
+  project: matchlens
+  owner: radoz
+  expires: "2026-11-30"
+properties:
+  template:
+    revisionSuffix: "${SUFFIX}"
+    # SIGTERM, then SIGKILL after this: open streams get GRACEFUL_TIMEOUT_S (20 s) of it
+    terminationGracePeriodSeconds: 30
+    containers:
+      - name: matchlens
+        image: "${IMAGE}"
+        resources:
+          cpu: 0.25
+          memory: 0.5Gi
+        # timeouts: /readyz took up to 1.59 s during the warm-up at 0.25 vCPU on the devbox
+        # (Metrics, Readiness and stop); /readyz never on the startup or liveness probe: either
+        # restarts a container that fails it, and each restart begins the warm-up again
+        probes:
+          # the cold start (match generation and the runs' replay check) ends with the bind;
+          # since M5 the replay check computes every match's overlay, the whole warm-up, so the
+          # bind comes after 211.8 s at 0.25 vCPU on the devbox (25 Oct; 14.5-29.9 s before, 4 s
+          # on ACA then); 1 + 240 x 3 s, ACA's own default threshold for a startup probe
+          - type: Startup
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 240
+          - type: Liveness
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # traffic only once every cue timeline is computed: since M5 the replay check computes
+          # them all before the bind, so /readyz is 200 at the first probe; it would gate a match
+          # served without a run (190-211 s at 0.25 vCPU on the devbox on 23 Oct, 30 s on ACA),
+          # inside 48 x 5 s after the startup probe (ACA's default readiness window)
+          - type: Readiness
+            httpGet:
+              path: /readyz
+              port: 8000
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 48
+            successThreshold: 1
+    # no rules: ACA's default HTTP rule (10 concurrent requests a replica); min 1 so no judge
+    # waits for a cold start
+    scale:
+      minReplicas: 1
+      maxReplicas: 2

@@ -1,0 +1,66 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv sync:*)",
+      "Bash(scripts/ci.sh)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git switch:*)",
+      "Bash(git merge --ff-only:*)",
+      "Bash(az account show:*)",
+      "Bash(az account list:*)",
+      "Bash(az group list:*)",
+      "Bash(az resource list:*)",
+      "Bash(az provider list:*)",
+      "Bash(az provider show:*)",
+      "Bash(az cognitiveservices account list:*)",
+      "Bash(az cognitiveservices model list:*)",
+      "Bash(az cognitiveservices usage list:*)",
+      "Bash(az consumption budget list:*)",
+      "Bash(az containerapp env list:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Edit(./.claude/**)",
+      "Edit(./.github/**)",
+      "Edit(./.githooks/**)",
+      "Edit(./scripts/ci.sh)",
+      "Edit(./pyproject.toml)",
+      "Edit(**/conftest.py)",
+      "Edit(./.git/**)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Bash(git push --force:*)",
+      "Bash(rm -rf:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard.py" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format.sh" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify.sh" }]
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+name: Claude review
+# One review comment when a PR is opened or marked ready, not on every push (saves the
+# subscription limit and Actions minutes). Same secret as claude.yml.
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR: ${{ github.event.pull_request.number }}
+            Review this pull request against CLAUDE.md. Look for logic bugs, security problems,
+            missing tests and rule violations: real club or player names, numbers in narratives
+            that do not come from the stats engine, claims without an event ID. Ignore style.
+            Post the result as a single comment with `gh pr comment`.
+          claude_args: '--allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'

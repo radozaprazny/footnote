@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Footnote</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">Footnote</a>
+    <span class="tagline">Synthetic matches, explained by verified facts</span>
+  </header>
+
+  <main id="picker" class="picker">
+    <h1>Pick a match</h1>
+    <p class="note">Every club, player and match here is fictional and generated from a seed.</p>
+    <p class="follow">Your club: its cues lead, the other club's step back
+      <span id="club-list" class="clubs" role="group" aria-label="Your club"></span>
+    </p>
+    <ul id="match-list" class="match-list" aria-busy="true"></ul>
+  </main>
+
+  <main id="watch" class="watch" hidden data-state="loading">
+    <section class="stage">
+      <div class="scoreboard">
+        <span id="home-name" class="team home"></span>
+        <span id="score" class="score">0–0</span>
+        <span id="away-name" class="team away"></span>
+        <span id="clock" class="clock">00:00</span>
+        <span id="status" class="status" role="status">Loading the match…</span>
+        <span class="personas" role="group" aria-label="Who the cues are for">
+          <button type="button" data-persona="analyst">Analyst</button>
+          <button type="button" data-persona="fan">Fan</button>
+        </span>
+        <span class="langs" role="group" aria-label="Language of the cues">
+          <button type="button" data-lang="en" lang="en">EN</button>
+          <button type="button" data-lang="sk" lang="sk">SK</button>
+        </span>
+        <span class="speeds" role="group" aria-label="Replay speed">
+          <button type="button" data-speed="10">10×</button>
+          <button type="button" data-speed="30">30×</button>
+          <button type="button" data-speed="60">60×</button>
+        </span>
+      </div>
+      <div class="pitch-wrap">
+        <svg id="pitch" viewBox="-4 -3 113 74" role="img" aria-label="Pitch with players and ball">
+          <rect class="grass" x="-4" y="-3" width="113" height="74"/>
+          <g class="lines">
+            <rect x="0" y="0" width="105" height="68"/>
+            <line x1="52.5" y1="0" x2="52.5" y2="68"/>
+            <circle cx="52.5" cy="34" r="9.15"/>
+            <circle class="spot" cx="52.5" cy="34" r="0.3"/>
+            <rect x="0" y="13.84" width="16.5" height="40.32"/>
+            <rect x="88.5" y="13.84" width="16.5" height="40.32"/>
+            <rect x="0" y="24.84" width="5.5" height="18.32"/>
+            <rect x="99.5" y="24.84" width="5.5" height="18.32"/>
+            <circle class="spot" cx="11" cy="34" r="0.3"/>
+            <circle class="spot" cx="94" cy="34" r="0.3"/>
+            <path d="M 16.5 26.69 A 9.15 9.15 0 0 1 16.5 41.31"/>
+            <path d="M 88.5 26.69 A 9.15 9.15 0 0 0 88.5 41.31"/>
+            <rect class="goal" x="-2" y="30.34" width="2" height="7.32"/>
+            <rect class="goal" x="105" y="30.34" width="2" height="7.32"/>
+          </g>
+          <g id="highlight"></g>
+          <g id="players"></g>
+          <circle id="ball" class="ball" r="0.75" cx="52.5" cy="34"/>
+        </svg>
+        <div id="loading" class="loading">Loading the match…</div>
+        <div id="lower-third" class="lower-third" aria-live="polite"></div>
+      </div>
+    </section>
+    <aside class="rail">
+      <h2>Cues</h2>
+      <p class="note">Every number is a fact from the stats engine. Click a goal or chance card
+        to see where it happened; open “verified” for its fact and event ids.</p>
+      <ol id="rail" class="cards" reversed></ol>
+    </aside>
+  </main>
+</body>
+</html>

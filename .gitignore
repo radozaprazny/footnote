@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+dist/
+.env
+.env.*
+.claude/state/
+.claude/settings.local.json
+
+# owner notes in Slovak, kept local (the repo is English only)
+docs/agent-graf/
+# Claude Code worktrees (one task, one working tree)
+.claude/worktrees/
+
+# runs: explain handoff logs and summaries (M3), latency measurements and recordings (M4)
+/runs/
+# the hackathon's Official Rules and resource page: Microsoft's texts, kept local (M7)
+/docs/RULES.md
+/docs/resource-playlists.md

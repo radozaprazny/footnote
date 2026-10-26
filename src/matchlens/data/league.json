@@ -1,0 +1,487 @@
+{
+  "id": "meridian",
+  "name": "Meridian League",
+  "note": "All leagues, clubs, places and players here are fictional.",
+  "clubs": [
+    {
+      "id": "cor",
+      "name": "Corrowmere Athletic",
+      "short_name": "COR",
+      "city": "Corrowmere",
+      "colours": {
+        "primary": "#1F4E79",
+        "secondary": "#F2C14E"
+      },
+      "players": [
+        {
+          "id": "cor-p01",
+          "name": "Aled Brennick",
+          "number": 1,
+          "position": "GK"
+        },
+        {
+          "id": "cor-p02",
+          "name": "Tomasz Wierlo",
+          "number": 13,
+          "position": "GK"
+        },
+        {
+          "id": "cor-p03",
+          "name": "Joel Varrow",
+          "number": 2,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p04",
+          "name": "Kofi Amberle",
+          "number": 3,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p05",
+          "name": "Rhys Talmont",
+          "number": 4,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p06",
+          "name": "Niklas Oerberg",
+          "number": 5,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p07",
+          "name": "Dario Fenucci",
+          "number": 15,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p08",
+          "name": "Sami Okerlund",
+          "number": 22,
+          "position": "DF"
+        },
+        {
+          "id": "cor-p09",
+          "name": "Iker Salvane",
+          "number": 6,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p10",
+          "name": "Owen Hartrigg",
+          "number": 8,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p11",
+          "name": "Luca Morvane",
+          "number": 10,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p12",
+          "name": "Emeka Doranwe",
+          "number": 14,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p13",
+          "name": "Finn Castellow",
+          "number": 16,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p14",
+          "name": "Matej Kvorcik",
+          "number": 18,
+          "position": "MF"
+        },
+        {
+          "id": "cor-p15",
+          "name": "Yusuf Benaroth",
+          "number": 7,
+          "position": "FW"
+        },
+        {
+          "id": "cor-p16",
+          "name": "Callum Rhoswen",
+          "number": 9,
+          "position": "FW"
+        },
+        {
+          "id": "cor-p17",
+          "name": "Theo Lindqvarn",
+          "number": 11,
+          "position": "FW"
+        },
+        {
+          "id": "cor-p18",
+          "name": "Adrien Pellacourt",
+          "number": 19,
+          "position": "FW"
+        }
+      ]
+    },
+    {
+      "id": "vel",
+      "name": "Vellbridge Town",
+      "short_name": "VEL",
+      "city": "Vellbridge",
+      "colours": {
+        "primary": "#8B1E3F",
+        "secondary": "#F5F5F5"
+      },
+      "players": [
+        {
+          "id": "vel-p01",
+          "name": "Marek Hollvay",
+          "number": 1,
+          "position": "GK"
+        },
+        {
+          "id": "vel-p02",
+          "name": "Ewan Strathmoy",
+          "number": 13,
+          "position": "GK"
+        },
+        {
+          "id": "vel-p03",
+          "name": "Bastian Kreul",
+          "number": 2,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p04",
+          "name": "Tobi Asherwin",
+          "number": 3,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p05",
+          "name": "Gareth Penvose",
+          "number": 4,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p06",
+          "name": "Mateus Ilvarro",
+          "number": 5,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p07",
+          "name": "Jonah Brackwell",
+          "number": 15,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p08",
+          "name": "Pavel Drozenko",
+          "number": 22,
+          "position": "DF"
+        },
+        {
+          "id": "vel-p09",
+          "name": "Ricardo Velmonte",
+          "number": 6,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p10",
+          "name": "Ollie Fennimore",
+          "number": 8,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p11",
+          "name": "Noa Hesterby",
+          "number": 10,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p12",
+          "name": "Ismael Durande",
+          "number": 14,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p13",
+          "name": "Kieran Wolstan",
+          "number": 16,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p14",
+          "name": "Viktor Szalmary",
+          "number": 18,
+          "position": "MF"
+        },
+        {
+          "id": "vel-p15",
+          "name": "Darnell Fenwright",
+          "number": 7,
+          "position": "FW"
+        },
+        {
+          "id": "vel-p16",
+          "name": "Elias Thorvanger",
+          "number": 9,
+          "position": "FW"
+        },
+        {
+          "id": "vel-p17",
+          "name": "Malik Sennabe",
+          "number": 11,
+          "position": "FW"
+        },
+        {
+          "id": "vel-p18",
+          "name": "Jordi Coscarell",
+          "number": 19,
+          "position": "FW"
+        }
+      ]
+    },
+    {
+      "id": "qrd",
+      "name": "Quarrendale Rovers",
+      "short_name": "QRD",
+      "city": "Quarrendale",
+      "colours": {
+        "primary": "#FFFFFF",
+        "secondary": "#2E7D32"
+      },
+      "players": [
+        {
+          "id": "qrd-p01",
+          "name": "Henrik Daalsen",
+          "number": 1,
+          "position": "GK"
+        },
+        {
+          "id": "qrd-p02",
+          "name": "Cian Mulvarra",
+          "number": 13,
+          "position": "GK"
+        },
+        {
+          "id": "qrd-p03",
+          "name": "Ade Tomlinsen",
+          "number": 2,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p04",
+          "name": "Luis Caberno",
+          "number": 3,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p05",
+          "name": "Struan McAvery",
+          "number": 4,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p06",
+          "name": "Felix Grauwald",
+          "number": 5,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p07",
+          "name": "Nathan Brightmoor",
+          "number": 15,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p08",
+          "name": "Oskar Lindholt",
+          "number": 22,
+          "position": "DF"
+        },
+        {
+          "id": "qrd-p09",
+          "name": "Rafael Ostrander",
+          "number": 6,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p10",
+          "name": "Will Pennacott",
+          "number": 8,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p11",
+          "name": "Kenji Marrowby",
+          "number": 10,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p12",
+          "name": "Bilal Haddane",
+          "number": 14,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p13",
+          "name": "Connor Fairleigh",
+          "number": 16,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p14",
+          "name": "Jakub Vesnar",
+          "number": 18,
+          "position": "MF"
+        },
+        {
+          "id": "qrd-p15",
+          "name": "Sekou Trannard",
+          "number": 7,
+          "position": "FW"
+        },
+        {
+          "id": "qrd-p16",
+          "name": "Leon Wexmoor",
+          "number": 9,
+          "position": "FW"
+        },
+        {
+          "id": "qrd-p17",
+          "name": "Mateo Quintrell",
+          "number": 11,
+          "position": "FW"
+        },
+        {
+          "id": "qrd-p18",
+          "name": "Arlo Penhallow",
+          "number": 19,
+          "position": "FW"
+        }
+      ]
+    },
+    {
+      "id": "slt",
+      "name": "Saltreach FC",
+      "short_name": "SLT",
+      "city": "Saltreach",
+      "colours": {
+        "primary": "#E07A1F",
+        "secondary": "#0B3C5D"
+      },
+      "players": [
+        {
+          "id": "slt-p01",
+          "name": "Gustav Ellerholm",
+          "number": 1,
+          "position": "GK"
+        },
+        {
+          "id": "slt-p02",
+          "name": "Danny Corwellan",
+          "number": 13,
+          "position": "GK"
+        },
+        {
+          "id": "slt-p03",
+          "name": "Ibrahim Keddane",
+          "number": 2,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p04",
+          "name": "Lewis Ormanby",
+          "number": 3,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p05",
+          "name": "Thiago Brandell",
+          "number": 4,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p06",
+          "name": "Mikkel Rasborg",
+          "number": 5,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p07",
+          "name": "Femi Adeyorin",
+          "number": 15,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p08",
+          "name": "Patrik Novalek",
+          "number": 22,
+          "position": "DF"
+        },
+        {
+          "id": "slt-p09",
+          "name": "Hugo Delacambre",
+          "number": 6,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p10",
+          "name": "Aaron Whitmerry",
+          "number": 8,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p11",
+          "name": "Santi Orellanos",
+          "number": 10,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p12",
+          "name": "Tariq Beaumarsh",
+          "number": 14,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p13",
+          "name": "Elliot Crandford",
+          "number": 16,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p14",
+          "name": "Andrej Polvacek",
+          "number": 18,
+          "position": "MF"
+        },
+        {
+          "id": "slt-p15",
+          "name": "Moussa Delvigne",
+          "number": 7,
+          "position": "FW"
+        },
+        {
+          "id": "slt-p16",
+          "name": "Jamie Thornacre",
+          "number": 9,
+          "position": "FW"
+        },
+        {
+          "id": "slt-p17",
+          "name": "Nico Valdeprat",
+          "number": 11,
+          "position": "FW"
+        },
+        {
+          "id": "slt-p18",
+          "name": "Rory Ballinstow",
+          "number": 19,
+          "position": "FW"
+        }
+      ]
+    }
+  ]
+}

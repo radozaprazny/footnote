@@ -1,0 +1,15 @@
+# the build context: only what the Dockerfile copies, never local secrets or runs
+.venv
+.git
+.claude
+**/.env
+**/.env.*
+/runs
+tests
+docs
+scripts
+dist
+**/__pycache__
+.hypothesis
+.pytest_cache
+.ruff_cache

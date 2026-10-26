@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Pre-commit: run local CI on exactly what is being committed (the index), not the working tree.
+# The judge script itself comes from HEAD, so a commit cannot loosen the CI that judges it.
+set -euo pipefail
+
+if git diff --cached --name-only | grep -Eq '(^|/)\.env($|\.)'; then
+  echo "pre-commit: a .env file is staged, commit refused." >&2
+  exit 1
+fi
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+git checkout-index -a --prefix="$tmp/"
+if git cat-file -e HEAD:scripts/ci.sh 2>/dev/null; then
+  git show HEAD:scripts/ci.sh > "$tmp/scripts/ci.sh"
+fi
+if ! out=$(bash "$tmp/scripts/ci.sh" 2>&1); then
+  echo "$out" | tail -n 40 >&2
+  echo "pre-commit: local CI is red, commit refused." >&2
+  exit 1
+fi
+echo "pre-commit: local CI green."
