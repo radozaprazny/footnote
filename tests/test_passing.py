@@ -21,6 +21,7 @@ from matchlens.events import (
     Restart,
     make_event_id,
 )
+from matchlens.facts import _arrivals
 from matchlens.generator import generate_match
 from matchlens.match import Snapshot
 from matchlens.stats.passing import (
@@ -369,6 +370,12 @@ REAL_SEEDS = (3, 7)
 def real(seed: int):
     m = generate_match(seed)
     return m, pass_ratings(m.meta, m.events, m.snapshots)
+
+
+@pytest.mark.parametrize("seed", REAL_SEEDS)
+def test_real_match_rated_from_its_arrivals_alone_as_from_all_its_snapshots(seed):
+    m, ratings = real(seed)
+    assert pass_ratings(m.meta, m.events, _arrivals(m, m.events)) == ratings
 
 
 @pytest.mark.parametrize("seed", REAL_SEEDS)

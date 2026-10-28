@@ -37,11 +37,11 @@ multi-agent system, Best Multi-Agent System, Microsoft Agent Framework, Microsof
 
 **The problem.** A language model in a live broadcast can invent a number, or a judgement the match does not support, and on air one wrong number is a correction.
 
-**What we built.** A pipeline with five stages. A seeded generator writes match events and tracking. A deterministic stats engine turns them into facts, each with the event or frame ids it comes from, and into fixed judgement phrases. Workflows on **Microsoft Agent Framework** explain each key moment: a Moment Detector (code) finds it; an Analyst (Claude on **Microsoft Foundry**) reads its facts through an **MCP** server and drafts a caption; a Persona Editor rewrites it for fans, a Recap Writer sums the match up at full time and a Translator writes Slovak. A deterministic Guard judges every draft against the engine and sends a refused one back with machine-readable reasons; retries, fallbacks and a circuit breaker keep a card on screen. The agents share one case per moment, in which an unverified narrative cannot be represented, and every handoff is logged.
+**What we built.** A pipeline with five stages. A seeded generator moves all 22 players every 100 ms, each under his own limits on speed and acceleration, and writes the match events and tracking. A deterministic stats engine turns them into facts, each with the event or frame ids it comes from, and into fixed judgement phrases. Workflows on **Microsoft Agent Framework** explain each key moment: a Moment Detector (code) finds it; an Analyst (Claude on **Microsoft Foundry**) reads its facts through an **MCP** server and drafts a caption; a Persona Editor rewrites it for fans, a Recap Writer sums the match up at full time and a Translator writes Slovak. A deterministic Guard judges every draft against the engine and sends a refused one back with machine-readable reasons; retries, fallbacks and a circuit breaker keep a card on screen. The agents share one case per moment, in which an unverified narrative cannot be represented, and every handoff is logged.
 
 **What you see.** The page on **Azure Container Apps** replays three matches live, with the narratives the agents wrote with Claude on Foundry beforehand; the server judges each logged text again before it shows it. Pick an Analyst or a Fan persona, a favourite club, and English or Slovak.
 
-**Measured.** 28 of 28 narratives passed the Guard at the first attempt on Claude Sonnet 5.5 and on Claude Haiku 5.5; 62 of 62 Slovak translations passed, one after a retry; all the model calls of the project through 25 October cost €3.43.
+**Measured.** On the demo's three matches, 34 of 35 narratives passed the Guard at the first attempt on Claude Sonnet 5.5 and 35 of 35 at the second; 76 of 76 Slovak translations passed, one after a retry. On the first generator's matches, 28 of 28 passed at the first attempt on Claude Sonnet 5.5 and on Claude Haiku 5.5. All the model calls of the project through 25 October cost €3.43.
 
 Category: **Best Multi-Agent System** (Best Multi-Agent Orchestration).
 ```
@@ -50,7 +50,7 @@ Pass 2, after the first Save: the repository URL, the video's URL and the cover 
 
 ## Demo video
 
-Under 2 minutes: the shots end at 1:50, with 210 words of voice-over at a calm pace.
+Under 2 minutes: the shots end at 1:50, with 209 words of voice-over at a calm pace.
 No music and no logos; record in a clean browser profile (no bookmarks bar, extensions or other
 tabs), crop the README to its diagram, and give the terminal a neutral prompt. Footage: the live
 page in a 1920×1080 browser, the README's architecture diagram, and one terminal shot. Times are
@@ -63,17 +63,17 @@ targets.
 | 0:22–0:38 | Open a card's "✓ verified" chip: the fact and event ids appear. Click the card: its place lights up on the pitch. | "Every number comes from a deterministic stats engine, never from a model, and every claim cites the events or tracking frames behind it, so you can check each one." |
 | 0:38–0:52 | Switch Analyst to Fan, then EN to SK. The same card changes its words twice. | "The same verified facts reach an analyst and a casual fan as two different experiences, in English or Slovak." |
 | 0:52–1:12 | The README's architecture diagram; highlight the agents one by one. | "Under the hood: Microsoft Agent Framework workflows. A Moment Detector finds the goals, saves and shots off the woodwork. The Analyst reads the facts through an MCP server and drafts a caption; a Persona Editor, a Recap Writer and a Translator follow, all sharing one case per moment." |
-| 1:12–1:30 | The terminal shot below, with English captions on screen: the first draft ends "Saltreach FC má 59% navrch", "Saltreach FC are on top at 59%" (refused); the second "momentum Saltreach FC je 59%", "Saltreach FC's momentum is 59%" (passed). | "Each draft must pass the Guard: plain code, not another model. Here it refused a Slovak recap that put one club on top without the engine's reading, and the Translator fixed it on the second try." |
-| 1:30–1:44 | Full time, by a cut in the edit or by opening `?match=m0&team=vel&speed=300&hz=1` about 20 s before (full time comes about 20 s in): the recap card, then its Slovak version. Then the URL bar of the live page. | "At full time the Recap Writer sums the match up. The page runs on Azure Container Apps, and all the agents' model calls so far cost about three and a half euros." |
+| 1:12–1:30 | The terminal shot below, with English captions on screen: the first draft ends "Vellbridge Town má viac lopty 58%", "Vellbridge Town have more of the ball, 58%" (refused); the second "Vellbridge Town drží loptu na 58%", "Vellbridge Town keep the ball 58% of the time" (passed). | "Each draft must pass the Guard: plain code, not another model. Here it refused a Slovak translation that judged the possession without the engine's reading, and the Translator fixed it on the second try." |
+| 1:30–1:44 | Full time, by a cut in the edit or by opening `?match=m0&team=vel&speed=300&hz=1` about 20 s before (full time comes about 20 s in): the recap card, then its Slovak version. Then the URL bar of the live page. | "At full time the Recap Writer sums the match up. The page runs on Azure Container Apps, and all the agents' model calls through 25 October cost about three and a half euros." |
 | 1:44–1:50 | The title again with the repository URL. | "Footnote: match intelligence that shows its work." |
 
 The terminal shot, pasted into a terminal at the repository root:
 
 ```
 python3 -c "import json
-for line in open('demo/runs/m1/translate.sk.jsonl'):
+for line in open('demo/runs/m0/translate.sk.jsonl'):
     h = json.loads(line)
-    if h['to'] == 'render' and h['state']['moment_id'] == 'recap':
+    if h['to'] == 'render' and h['state']['moment_id'] == 'm0-k00272':
         for t in h['state']['translations']:
             if len(t['attempts']) == 2:
                 for a in t['attempts']:

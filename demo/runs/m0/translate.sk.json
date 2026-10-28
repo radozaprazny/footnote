@@ -1,5 +1,5 @@
 {
- "run_id": "20261023T185842002Z",
+ "run_id": "20261027T231746504Z",
  "match_id": "m0",
  "models": [
   "claude-sonnet-5-5"
@@ -24,50 +24,52 @@
  "personas": {},
  "translations": {
   "sk/analyst": {
-   "translations": 13,
-   "passed": 13,
+   "translations": 14,
+   "passed": 14,
    "fallback": 0,
    "open": 0,
    "first_attempt_passed": 13,
-   "attempts": 13,
-   "model_calls": 13,
-   "model_requests": 13,
+   "attempts": 15,
+   "model_calls": 15,
+   "model_requests": 15,
    "skipped": 0,
    "errors": {},
-   "reasons": {},
-   "tokens_in": 39056,
-   "tokens_out": 4133,
-   "cost_usd": 0.119442,
-   "latency_ms_p50": 3215,
-   "latency_ms_p95": 4229
+   "reasons": {
+    "phrase_not_cited": 1
+   },
+   "tokens_in": 46035,
+   "tokens_out": 5113,
+   "cost_usd": 0.1432,
+   "latency_ms_p50": 2761,
+   "latency_ms_p95": 5855
   },
   "sk/fan": {
-   "translations": 13,
-   "passed": 13,
+   "translations": 14,
+   "passed": 14,
    "fallback": 0,
    "open": 0,
-   "first_attempt_passed": 13,
-   "attempts": 13,
-   "model_calls": 13,
-   "model_requests": 13,
+   "first_attempt_passed": 14,
+   "attempts": 14,
+   "model_calls": 14,
+   "model_requests": 14,
    "skipped": 0,
    "errors": {},
    "reasons": {},
-   "tokens_in": 35822,
-   "tokens_out": 2924,
-   "cost_usd": 0.100884,
-   "latency_ms_p50": 2675,
-   "latency_ms_p95": 3064
+   "tokens_in": 39181,
+   "tokens_out": 3372,
+   "cost_usd": 0.112082,
+   "latency_ms_p50": 2474,
+   "latency_ms_p95": 2818
   }
  },
- "total_requests": 26,
- "total_tokens_in": 74878,
- "total_tokens_out": 7057,
- "total_cost_usd": 0.220326,
+ "total_requests": 29,
+ "total_tokens_in": 85216,
+ "total_tokens_out": 8485,
+ "total_cost_usd": 0.255282,
  "first_attempt_pass_rate": null,
  "final_pass_rate": null,
  "settings": {
-  "max_calls": 52,
+  "max_calls": 56,
   "pace_s": 15,
   "lang": "sk"
  }

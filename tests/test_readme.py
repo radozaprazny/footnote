@@ -109,7 +109,7 @@ def test_the_measured_numbers_are_in_the_metrics():
     rows = [line for line in section.splitlines() if line.startswith("| ") and "---" not in line]
     number = r"(?<![\d.])\d+(?:\.\d+)?(?![\d.])"  # a whole number, not a part of one
     numbers = {n for row in rows[1:] for n in re.findall(number, row)}
-    assert {"28", "62", "4.85", "18.7", "3.73"} <= numbers
+    assert {"28", "35", "76", "4.73", "18.7", "3.73"} <= numbers
     assert sorted(numbers - set(re.findall(number, metrics))) == []
 
 

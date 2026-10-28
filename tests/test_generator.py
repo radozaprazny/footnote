@@ -263,6 +263,32 @@ def test_unknown_club_is_refused():
         generate_match(1, home="cor", away="cor")
 
 
+# generator v1 as submitted (`m7-submission`, the live app's demo matches): M9 builds v2 beside it
+# and must not change a v1 match, not even through the league data both read
+V1_DIGESTS = {
+    0: "1037b0bad2d4df48aabccbbb2554c3d8fa0fb94d32e251d1767962c87676efd8",
+    1: "d02d3ccc2695ee708f2e76a006f9de73ec843f79d443a0d83598764c91af0da2",
+    3: "b24738d181caefee1dbe7361b6188fa9d6113735394933c25ffdc236603ec64e",
+}
+
+
+@pytest.mark.parametrize("seed", sorted(V1_DIGESTS))
+def test_v1_matches_stay_as_submitted(seed):
+    m = generate_match(seed)
+    digest = hashlib.sha256(repr((m.meta, m.events, m.snapshots)).encode()).hexdigest()
+    assert digest == V1_DIGESTS[seed]
+
+
+def test_v1s_view_of_the_league_stays_as_submitted():
+    # the demo seeds draw three of the four clubs; v1 reads each player's id, name, number and
+    # position, so these must not change in any club (digest computed before M9 item 2)
+    rows = sorted(
+        (p.id, p.name, p.number, p.position) for c in load_league().clubs for p in c.players
+    )
+    digest = hashlib.sha256(repr(rows).encode()).hexdigest()
+    assert digest == "41c4c4369485497cc010db46ce8d04b1f1b396ff971c0ea4627773c6ac604e2a"
+
+
 def test_short_squad_is_refused():
     from matchlens.league import load_league, parse_league
 

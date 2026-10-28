@@ -10,6 +10,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
+from matchlens.formations import FORMATIONS, ROLE_GROUP
 from matchlens.league import MIN_GOALKEEPERS, POSITIONS, SQUAD_SIZE, load_league, parse_league
 
 
@@ -289,9 +290,8 @@ def _drop_a_player(d):
 
 
 def _add_a_player(d):
-    d["clubs"][0]["players"].append(
-        {"id": "cor-p19", "name": "Extra", "number": 99, "position": "MF"}
-    )
+    extra = next(p for p in d["clubs"][0]["players"] if p["position"] == "MF")
+    d["clubs"][0]["players"].append(extra | {"id": "cor-p19", "name": "Extra", "number": 99})
 
 
 def _duplicate_player_id(d):
@@ -337,7 +337,8 @@ def _shirt_number_float(d):
 def _one_goalkeeper(d):
     for p in d["clubs"][0]["players"]:
         if p["position"] == "GK":
-            p["position"] = "DF"
+            # a whole outfield player, so only the keepers' count is broken
+            p |= {"position": "DF", "role": "CB", "top_speed": 8.0}
             break
 
 
@@ -385,6 +386,108 @@ def _duplicate_club_short_name(d):
     d["clubs"][1]["short_name"] = d["clubs"][0]["short_name"]
 
 
+def _player(d, club: str, number: int) -> dict:
+    """A player of the raw league by club and shirt number (every squad is numbered alike)."""
+    squad = next(c for c in d["clubs"] if c["id"] == club)["players"]
+    return next(p for p in squad if p["number"] == number)
+
+
+def _unknown_role(d):
+    _player(d, "cor", 6)["role"] = "WB"
+
+
+def _unknown_side(d):
+    _player(d, "cor", 6)["side"] = "X"
+
+
+def _keeper_role_for_a_defender(d):
+    _player(d, "cor", 4)["role"] = "GK"
+
+
+def _outfield_role_for_a_keeper(d):
+    _player(d, "cor", 13)["role"] = "CB"
+
+
+def _set(club: str, number: int, field: str, value):
+    def vary(d):
+        _player(d, club, number)[field] = value
+
+    vary.__name__ = f"_{field}_{value!r}_for_{club}_{number}"
+    return vary
+
+
+def _tactic(field: str, value):
+    def vary(d):
+        d["clubs"][0]["tactics"][field] = value
+
+    vary.__name__ = f"_tactics_{field}_{value!r}"
+    return vary
+
+
+def _unknown_formation(d):
+    d["clubs"][0]["formation"] = "4-5-1"
+
+
+def _too_few_wingers(d):
+    # cor plays 4-3-3 with two wingers; its only two become strikers
+    for number in (7, 11):
+        _player(d, "cor", number)["role"] = "ST"
+
+
+def _one_winger(d):
+    _player(d, "cor", 7)["role"] = "ST"
+
+
+def _back_without_a_substitute(d):
+    # cor's 4-3-3 uses 4 of its 6 at the back; two move into midfield
+    for number in (15, 22):
+        _player(d, "cor", number)["role"] = "DM"
+
+
+def _attack_without_a_substitute(d):
+    # slt's 3-5-2 uses 2 of its 4 in attack; both wingers move into midfield
+    for number in (7, 11):
+        _player(d, "slt", number)["role"] = "CM"
+
+
+def _midfield_without_a_substitute(d):
+    # cor's 4-3-3 uses 3 of its 6 midfielders; three become wingers
+    for number in (10, 16, 18):
+        _player(d, "cor", number)["role"] = "W"
+
+
+# a value one hundredth off each end of a player's limits, for a keeper (cor 1) and an outfield
+# player (cor 6); the ends themselves are in ACCEPTED_EDGES
+# the limits as M9 item 2 sets them, written out, so a drift of a constant in the code fails
+LIMITS = [
+    ("top_speed", 1, (6.5, 8.0), "top speed"),
+    ("top_speed", 6, (7.5, 9.8), "top speed"),
+    ("acceleration", 6, (4.0, 6.5), "acceleration"),
+    ("stamina", 6, (0.0, 1.0), "stamina"),
+    ("work_rate", 6, (0.0, 1.0), "work rate"),
+]
+SHARE = (0.0, 1.0)
+OFF_LIMITS = [
+    (_set("cor", number, field, round(end + step, 2)), f"cor-p\\d+: {what} .* is outside")
+    for field, number, (low, high), what in LIMITS
+    for end, step in ((low, -0.01), (high, 0.01))
+] + [
+    (_set("cor", 6, "top_speed", True), "top speed True is not a number in 7.5-9.8"),
+    (_set("cor", 6, "stamina", "high"), "stamina 'high' is not a number in 0.0-1.0"),
+    # a NaN compares false with both ends, so a check written as two "is it beyond" tests would let
+    # it through; infinities are just far off
+    (_set("cor", 6, "top_speed", math.nan), "top speed nan is outside"),
+    (_set("cor", 6, "acceleration", math.inf), "acceleration inf is outside"),
+    (_set("cor", 6, "work_rate", -math.inf), "work rate -inf is outside"),
+]
+TACTICS = ("line_height", "press", "width")
+TACTICS_OFF = [
+    (_tactic(field, value), f"cor: tactics {field} {value!r} {problem}")
+    for field in TACTICS
+    for value, problem in ((-0.01, "is outside"), (1.01, "is outside"), (True, "is not a number"))
+] + [(_tactic("build_up", "long"), "unknown build-up 'long'")]
+
+
 BROKEN_RULES = [
     (_drop_a_player, "squad has 17 players"),
     (_add_a_player, "squad has 19 players"),
@@ -409,6 +512,18 @@ BROKEN_RULES = [
     (_one_club, "league has 1 clubs"),
     (_duplicate_club_id, "duplicate club id"),
     (_duplicate_club_short_name, "duplicate club short name"),
+    (_unknown_role, "unknown role 'WB'"),
+    (_unknown_side, "unknown side 'X'"),
+    (_keeper_role_for_a_defender, "role GK does not fit position DF"),
+    (_outfield_role_for_a_keeper, "role CB does not fit position GK"),
+    (_unknown_formation, "unknown formation '4-5-1'"),
+    (_too_few_wingers, "cor: 0 W, the 4-3-3 needs 2"),
+    (_one_winger, "cor: 1 W, the 4-3-3 needs 2"),
+    (_back_without_a_substitute, "cor: no substitute in the back, 4 players for the 4-3-3's 4"),
+    (_midfield_without_a_substitute, "no substitute in the midfield, 3 players for the 4-3-3's 3"),
+    (_attack_without_a_substitute, "slt: no substitute in the attack, 2 players for the 3-5-2's 2"),
+    *OFF_LIMITS,
+    *TACTICS_OFF,
 ]
 
 
@@ -438,8 +553,42 @@ def _shirt_number_99(d):
     d["clubs"][0]["players"][5]["number"] = 99
 
 
+def _back_with_one_substitute(d):
+    _player(d, "cor", 22)["role"] = "DM"
+
+
+def _attack_with_one_substitute(d):
+    _player(d, "slt", 7)["role"] = "CM"
+
+
+def _midfield_with_one_substitute(d):
+    # cor's 4-3-3 uses 3 midfielders; two of its 6 become wingers, so 4 are left
+    for number in (10, 18):
+        _player(d, "cor", number)["role"] = "W"
+
+
+def _a_whole_number_limit(d):
+    _player(d, "cor", 6)["top_speed"] = 9
+
+
+# the ends of a player's limits and of the tactics, which must still pass
+LIMIT_ENDS = [
+    _set("cor", number, field, end)
+    for field, number, (low, high), _ in LIMITS
+    for end in (low, high)
+] + [_tactic(field, end) for field in TACTICS for end in SHARE]
+
 # the edges of each rule, which must still pass
-ACCEPTED_EDGES = [_two_clubs, _lower_case_hex_colour, _shirt_number_99]
+ACCEPTED_EDGES = [
+    _two_clubs,
+    _lower_case_hex_colour,
+    _shirt_number_99,
+    _back_with_one_substitute,
+    _midfield_with_one_substitute,
+    _attack_with_one_substitute,
+    _a_whole_number_limit,
+    *LIMIT_ENDS,
+]
 
 
 @pytest.mark.parametrize("vary", ACCEPTED_EDGES, ids=[vary.__name__ for vary in ACCEPTED_EDGES])
@@ -447,3 +596,49 @@ def test_edge_of_a_rule_is_accepted(vary):
     data = raw_league()
     vary(data)
     parse_league(data)
+
+
+def test_packaged_squads_fill_their_formations_with_a_substitute_per_group():
+    clubs = {c.id: c for c in load_league().clubs}
+    # the edge of the role rule, accepted: cor's 4-3-3 needs two wingers and cor has two
+    assert sum(s.role == "W" for s in FORMATIONS[clubs["cor"].formation]) == 2
+    assert sum(p.role == "W" for p in clubs["cor"].players) == 2
+    for club in clubs.values():
+        slots = FORMATIONS[club.formation]
+        for group in {ROLE_GROUP[s.role] for s in slots}:
+            used = sum(ROLE_GROUP[s.role] == group for s in slots)
+            have = sum(ROLE_GROUP[p.role] == group for p in club.players)
+            assert have > used, (club.id, group)
+
+
+def test_the_four_clubs_play_four_formations_with_distinct_tactics():
+    clubs = load_league().clubs
+    assert len({c.formation for c in clubs}) == len(clubs) == 4
+    assert len({c.tactics for c in clubs}) == 4
+
+
+@pytest.mark.parametrize(("field", "number", "limits", "what"), LIMITS)
+@given(fraction=st.floats(min_value=-1.0, max_value=2.0, allow_nan=False))
+def test_a_limit_holds_exactly_its_range(field, number, limits, what, fraction):
+    low, high = limits
+    value = low + fraction * (high - low)
+    data = raw_league()
+    _player(data, "cor", number)[field] = value
+    if low <= value <= high:
+        player = next(p for p in parse_league(data).clubs[0].players if p.number == number)
+        assert getattr(player, field) == value
+    else:
+        with pytest.raises(ValueError, match=f"{what} .* is outside"):
+            parse_league(data)
+
+
+@pytest.mark.parametrize("field", TACTICS)
+@given(value=st.floats(min_value=-1.0, max_value=2.0, allow_nan=False))
+def test_a_tactic_holds_exactly_its_range(field, value):
+    data = raw_league()
+    data["clubs"][0]["tactics"][field] = value
+    if 0.0 <= value <= 1.0:
+        assert getattr(parse_league(data).clubs[0].tactics, field) == value
+    else:
+        with pytest.raises(ValueError, match=f"tactics {field} .* is outside"):
+            parse_league(data)

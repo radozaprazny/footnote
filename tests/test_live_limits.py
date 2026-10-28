@@ -18,6 +18,9 @@ from sse_client import FakeClock
 
 from matchlens.api import MIN_SPEED, LiveLimits, create_app
 
+# slots, deadlines and a server answering in time: alone, after the rest (scripts/ci.sh)
+pytestmark = pytest.mark.serial
+
 LAST = real.match(7).events[-1].event_id  # resume after it: a few messages, a short body
 LOWER = "lower speed or hz"
 

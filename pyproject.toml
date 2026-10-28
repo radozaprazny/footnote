@@ -22,6 +22,7 @@ dev = [
     "hypothesis>=6.170.1",
     "playwright==1.64.0",
     "pytest>=8",
+    "pytest-xdist>=3.8.0",
     "ruff>=0.6",
 ]
 
@@ -35,6 +36,7 @@ packages = ["src/matchlens"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+markers = ["serial: timing flakes under load, so scripts/ci.sh runs it alone, after the rest"]
 
 [tool.ruff]
 line-length = 100

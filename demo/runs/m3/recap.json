@@ -1,5 +1,5 @@
 {
- "run_id": "20261023T191953049Z",
+ "run_id": "20261028T000004979Z",
  "match_id": "m3",
  "models": [
   "claude-sonnet-5-5"
@@ -15,11 +15,11 @@
  "skipped": 0,
  "errors": {},
  "reasons": {},
- "tokens_in": 4986,
- "tokens_out": 544,
- "cost_usd": 0.015412,
- "latency_ms_p50": 4022,
- "latency_ms_p95": 4022,
+ "tokens_in": 4998,
+ "tokens_out": 497,
+ "cost_usd": 0.014966,
+ "latency_ms_p50": 3977,
+ "latency_ms_p95": 3977,
  "stopped": null,
  "personas": {
   "fan": {
@@ -34,17 +34,18 @@
    "skipped": 0,
    "errors": {},
    "reasons": {},
-   "tokens_in": 4681,
-   "tokens_out": 195,
-   "cost_usd": 0.011312,
-   "latency_ms_p50": 2386,
-   "latency_ms_p95": 2386
+   "tokens_in": 4631,
+   "tokens_out": 194,
+   "cost_usd": 0.011202,
+   "latency_ms_p50": 2189,
+   "latency_ms_p95": 2189
   }
  },
+ "translations": {},
  "total_requests": 2,
- "total_tokens_in": 9667,
- "total_tokens_out": 739,
- "total_cost_usd": 0.026724,
+ "total_tokens_in": 9629,
+ "total_tokens_out": 691,
+ "total_cost_usd": 0.026168,
  "first_attempt_pass_rate": 1.0,
  "final_pass_rate": 1.0,
  "settings": {

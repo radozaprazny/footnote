@@ -23,6 +23,13 @@ if [ -z "$(changes '*.py')" ]; then
   rm -f "$counter"; exit 0
 fi
 
+# A commit in progress in this tree holds its index lock: its pre-commit hook runs the tests of
+# the change, and a second run beside it loads the CPU its timing tests need (owner decision,
+# 27 Oct)
+if [ -e "$(git rev-parse --git-path index.lock)" ]; then
+  exit 0
+fi
+
 # Only the tests of the changed files, data and config included; none picked means all tests
 # (select_tests.py says when). The full suite runs in the pre-commit hook (scripts/ci.sh) and in
 # the verifier.
@@ -32,7 +39,27 @@ if ! picked=$(changes '*.py' src tests pyproject.toml uv.lock | python3 "$hooks/
 fi
 tests=()
 [ -n "$picked" ] && mapfile -t tests <<< "$picked"
-if out=$(uv run ruff check . 2>&1 && uv run pytest -q -x "${tests[@]}" 2>&1); then
+
+# A tree whose lock has pytest-xdist runs them as scripts/ci.sh does: on 6 workers, then those
+# marked serial on their own, a 5 (none of that kind) green unless both runs have it (owner, 27
+# Oct). An older tree, without it, on one process.
+run_tests() {
+  if ! grep -qx 'name = "pytest-xdist"' uv.lock 2>/dev/null; then
+    uv run pytest -q -x "$@"; return
+  fi
+  local parallel=0 serial=0
+  uv run pytest -q -x -n 6 -m "not serial" "$@" || parallel=$?
+  if [ "$parallel" -ne 0 ] && [ "$parallel" -ne 5 ]; then
+    return "$parallel"
+  fi
+  uv run pytest -q -x -m serial "$@" || serial=$?
+  if [ "$serial" -eq 5 ] && [ "$parallel" -eq 0 ]; then
+    return 0
+  fi
+  return "$serial"
+}
+
+if out=$(uv run ruff check . 2>&1 && run_tests "${tests[@]}" 2>&1); then
   rm -f "$counter"; exit 0            # green: may stop
 fi
 out="$note${note:+$'\n'}$out"

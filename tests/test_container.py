@@ -27,6 +27,9 @@ from matchlens.explain.summary import summarize
 from matchlens.render import moments, recap
 from matchlens.render.moments import FAN_VIEW, NARRATIVE, match_overlay, moment_cues
 
+# a stop timed against STOP_LIMIT_S and a warm-up against a deadline: alone, after the rest
+pytestmark = pytest.mark.serial
+
 REPO = Path(__file__).resolve().parents[1]
 RUNS = REPO / "demo" / "runs"
 DEMO_RUNS = sorted((p for p in RUNS.iterdir() if p.is_dir()), key=lambda p: int(p.name[1:]))
@@ -74,7 +77,7 @@ def test_a_demo_run_fits_its_match_and_shows_every_narrative(run):
     assert summarize(handoffs).models == (DEMO_MODEL,)  # what the attempts record
     logged = sum(h.receiver is Role.RENDER and h.case.narrative is not None for h in handoffs)
     assert logged == summary["narratives"] > 0
-    cues = moment_cues(real.match(seed), handoffs)
+    cues = moment_cues(real.match_v2(seed), handoffs)
     shown = sum(c.lines[0].startswith(f"{NARRATIVE} · ") for c in cues)
     assert shown == logged
 
@@ -103,7 +106,7 @@ def test_a_demo_run_shows_every_fan_rendition_recap_and_slovak_translation(run):
         for attempt in rewriting.attempts
     }
     assert models == {DEMO_MODEL}
-    overlay = match_overlay(real.match(int(run.name[1:])), handoffs)
+    overlay = match_overlay(real.match_v2(int(run.name[1:])), handoffs)
     cues = {c.cue_id.rpartition("/")[2]: c for c in overlay.cues if c.kind == "moment"}
     closed = [c for c in recap.closed_cases(handoffs).values() if not c.is_recap]
     assert len(closed) == json.loads((run / "summary.json").read_text())["moments"] > 0
@@ -127,7 +130,11 @@ def test_a_demo_run_shows_every_fan_rendition_recap_and_slovak_translation(run):
     }
 
 
-@pytest.mark.parametrize("run", DEMO_RUNS, ids=lambda p: p.name)
+# generator v1's runs, kept for the record and public, though no longer served (M9 item 8)
+V1_RUNS = sorted(p for p in (REPO / "demo" / "runs-v1").iterdir() if p.is_dir())
+
+
+@pytest.mark.parametrize("run", DEMO_RUNS + V1_RUNS, ids=lambda p: f"{p.parent.name}/{p.name}")
 def test_no_demo_text_names_a_real_club_or_player(run):
     """The demo runs go public with the repo and on the page: no text of theirs (narratives,
     renditions, recaps, translations and their claims; drafts the Guard refused too) names a real

@@ -1,6 +1,7 @@
 import dataclasses
 import json
 import math
+from array import array
 from decimal import ROUND_HALF_UP, Decimal
 from fractions import Fraction
 
@@ -31,7 +32,7 @@ from matchlens.facts import (
 )
 from matchlens.generator import generate_match
 from matchlens.league import load_league
-from matchlens.match import Match, Snapshot
+from matchlens.match import Match, Snapshot, Tracking
 from matchlens.stats.flow import control, momentum, pressing
 from matchlens.stats.passing import pass_ratings, pass_stats
 from matchlens.stats.possession import possession, spells
@@ -71,9 +72,18 @@ cm_y = st.integers(0, round(PITCH_WIDTH * 100)).map(lambda v: v / 100)
 
 @st.composite
 def tracked_matches(draw) -> Match:
-    """Tracking only: a few snapshots per period at any clocks, everyone anywhere."""
+    """Tracking only: a few snapshots per period at any clocks, everyone anywhere; or, as
+    generator v2 keeps it, a few frames a period."""
     meta = draw(match_metas())
     players = meta.home_lineup + meta.away_lineup
+    if draw(st.booleans()):
+        periods = []
+        for _ in PERIODS:
+            values = []
+            for _ in range(draw(st.integers(1, 5)) * (1 + len(players))):
+                values += [round(draw(cm) * 100), round(draw(cm_y) * 100)]
+            periods.append(array("h", values).tobytes())
+        return Match(meta, (), (), Tracking(players, tuple(periods)))
     snaps = []
     for period in PERIODS:
         for clock in sorted({0, *draw(st.lists(st.integers(1, 3_000), max_size=5))}):

@@ -12,7 +12,10 @@ import pytest
 from explain_strategies import REJECT
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
-from real import match
+from real import (
+    cli_on_v1,  # noqa: F401 (autouse: the CLI replays on v1)
+    match,
+)
 
 from matchlens import cli
 from matchlens.events import EventType, display_clock

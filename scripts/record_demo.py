@@ -22,7 +22,7 @@ from playwright.sync_api import sync_playwright
 from serving import serve  # scripts/serving.py, next to this file
 
 from matchlens.explain.log import read_handoffs
-from matchlens.generator import generate_match
+from matchlens.generator_v2 import generate_match_v2
 from matchlens.render.moments import NARRATIVE, match_cues
 
 RUNS = Path(__file__).resolve().parent.parent / "runs"
@@ -61,7 +61,7 @@ def main() -> None:
     parser.add_argument("--seconds", type=float, default=60, help="replay before the card click")
     args = parser.parse_args()
 
-    match = generate_match(args.seed)
+    match = generate_match_v2(args.seed)
     match_id = match.meta.match_id
     try:
         handoffs = read_handoffs(args.run / "handoffs.jsonl") if args.run else []

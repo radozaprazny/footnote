@@ -10,6 +10,7 @@ import real
 from fastapi.testclient import TestClient
 from hypothesis import given, settings
 from hypothesis import strategies as st
+from real import cli_on_v1  # noqa: F401 (autouse: the CLI replays on v1)
 from test_explain_workflow import KINDS, memo_facts_at, moments, reply, run_workflow, scripted
 
 from matchlens import cli
@@ -451,7 +452,7 @@ def test_serve_passes_each_run_to_its_match(monkeypatch, tmp_path):
     _, handoffs = run({m.moment_id: ["pass"] for m in moments()})
     given_to = {}
     monkeypatch.setattr("uvicorn.run", lambda app, **kw: None)
-    monkeypatch.setattr("matchlens.cli.generate_match", real.match)
+    monkeypatch.setattr("matchlens.cli.generate_match_v2", real.match)
 
     def create_app(matches, overlays, limits):
         assert limits == LiveLimits()  # the public app's (issue #2)

@@ -10,27 +10,52 @@ hackathon's Official Rules (a local copy, see `CLAUDE.md`).
 - Submission closes: **Wed 28 Oct 2026, 07:59 CET** (= Tue 27 Oct 23:59 PDT)
 - Clocks change in Bratislava on Sun 25 Oct (CEST → CET); in the US on Sun 1 Nov.
 
-## Now (Mon 26 Oct, 21:00 CET)
+## Now (Tue 27 Oct, 08:10 CET)
 The current state only: each milestone's record is in Backlog by milestone below, the owner's
 other decisions in the next section, the history in the git log of the private repository.
 - **Done:** M0–M6. M5 item 7 (player focus) was conditional and is not done. **M7** (the
   submission) runs in `m7-submission` (`.claude/worktrees/m7-submission`, session
   `18-plhack-ec` since 26 Oct ~20:30 CET): the denylist hashes, the README, this public PROGRESS,
   the project page's texts and the video script (`docs/submission.md`) are done, Microsoft's
-  texts out of the repo, the load limits on `/live` (issue #2); the owner's steps remain, in the
-  order M7 gives them.
+  texts out of the repo, the load limits on `/live` (issue #2), the full-time card without the
+  top speed (issue #7), the re-deploy, `main` and the public repository; the owner's steps (5)
+  to (9) remain: the video, the cover, the project page, the submission.
 - **M8 (the showcase): no-go**, the owner's decision 26 Oct 19:48 CET, ahead of its Tue 12:00
   date: `m7-submission` is what is submitted, and the public repository and the video follow
   the re-deploy at once. M8's work stays on `m8-showcase` and in its worktrees for after the
   judging; its state is in the GitHub issues.
-- **Branches:** `main` = `f2b50b9` (M2–M6, fast-forwarded and pushed by the owner 25 Oct
-  22:18 CET; GitHub CI green, run 40234895445). `m5-personalize` = `0b130a6` (the demo runs of
-  M5 and the startup probe's window), pushed by the owner 26 Oct. `m7-submission` builds on it.
-  Only the owner pushes and merges into `main`.
+- **M9 (generator v2, realistic movement): started** 27 Oct 08:55 CET at the owner's word, on
+  `m9-generator` only (`.claude/worktrees/m9-generator`, session `18-plhack-ad`), so that
+  `m7-submission` stays the version submitted now; the plan is the last section of Backlog by
+  milestone, its baseline the Metrics row Player movement. Done: item 1 (the bands, measured on 7
+  real matches, approved by the owner), item 2 (club and player data, the identities approved),
+  item 3 (the movement layer: the kinematics and the players' targets), item 4 (the set
+  pieces' layouts) and item 5 (`generator_v2`: v1's decisions over the moving players, the dead
+  ball included, calibrated over 50 seeds; five verifier rounds and a review), item 6
+  (every step kept compactly; a match and a frame pass in 8.0–8.4 s, within its budget) and item 8
+  (the CLI on v2 and its Sonnet 5.5 demo runs, $2.40). Since 27 Oct ~23:45 CET it goes into the
+  submission (owner): item 7 waits until after the judging; next the container's cold start and
+  memory on v2, then the owner's deploy and public repository, go/no-go 05:30 CET.
+- **Branches:** `main` = `c1d44e1` (M2–M7 with issues #2 and #7, fast-forwarded and pushed by the
+  owner with `m7-submission` 26 Oct 23:51 CET; GitHub CI green, run 40415645610, 23:51–00:13
+  CET). Only the owner pushes and merges into `main`.
+- **Public repository:** https://github.com/radozaprazny/footnote, one commit whose tree is
+  `main`'s `c1d44e1` (135 files; the real-name detectors hit only the engine's word "reading"),
+  created by the owner 26 Oct 23:53 CET; its two Claude workflows disabled; CI green, run
+  40415823384, 23:53–00:10 CET; the README's diagram renders (a Playwright screenshot of the
+  page, 26 Oct 23:54 CET). A later change reaches it only by a new commit there. Waiting for
+  one: the README's paragraph "What the tracking is, and is not" (owner's OK in chat 27 Oct,
+  before 08:10 CET, after the owner found the players' movement in the video unnatural, `0afe37a`), and M9's
+  plan; the app is not changed, so no re-deploy.
 - **Live app:** https://ca-matchlens.niceglacier-670016e8.swedencentral.azurecontainerapps.io/
-  runs `ca-matchlens--23d81ab` (M7 with issues #2 and #7) since 26 Oct 23:30 CET, deployed by
-  the owner (Metrics: Deploy, issues #2 and #7; the auto-mode classifier refuses a deploy to
-  Claude). Frozen from the
+  runs `ca-matchlens--cd660c0` (generator v2: M9 items 1–6 and 8) since 28 Oct ~02:38 CET,
+  deployed by the owner from `m9-generator`, healthy after 79 s (the try of `ee4d2fb` before it
+  stopped at the revision, ACA's readiness threshold, nothing deployed). Smoke test 02:39–02:42
+  CET: `/`, `/healthz`, `/readyz`, `/matches` (m0, m1, m3), `/league` 200 in 0.10–0.14 s; each
+  recap is its v2 run's (the server judges the logged texts against its own matches); the first
+  50 frames of m0's `/live` equal v2's, 0 of 50 v1's; one revision, 100 % of the traffic. Before
+  it `ca-matchlens--23d81ab` (M7 with issues #2 and #7, 26 Oct 23:30 CET; Metrics: Deploy, issues
+  #2 and #7; the auto-mode classifier refuses a deploy to Claude). Frozen from the
   submission's close, Wed 28 Oct 07:59 CET, to the end of judging, Wed 11 Nov 08:59 CET: no
   re-deploy, not even a bug fix; a restart if unhealthy; a change only if the Sponsor permits it
   (owner, 24 Oct; `docs/deploy.md`).
@@ -88,7 +113,30 @@ Bratislava time. Each milestone's own approvals stand in its section of the back
   the Playwright install; Lessons get the surviving mutant, an option's `dest`, `pgrep -f`, denylist
   exceptions, the anchor splice, pipefail and scratch-copy mutants); 24 Oct (a loud lookup under
   `set -e`, `!` in double quotes); 25 Oct (readable colours, second-language word lists); 26 Oct
-  21:00 CET (`git rm --cached` and a local copy, from the review of Microsoft's texts).
+  21:00 CET (`git rm --cached` and a local copy, from the review of Microsoft's texts); 27 Oct
+  ~23:10 CET (a mutant sweep of one's own before each verifier round, asked at M9 item 6).
+- 27 Oct, ~14:10 CET, testing (rules in CLAUDE.md and `/ship`): the verifier has a 15-minute
+  budget and fails only on its hard rules or a surviving mutant of the key invariants `/ship`
+  names; the pre-commit hook runs the tests of the staged files, imports in `src/` followed,
+  and the whole suite runs in GitHub CI and before a merge into main or a deploy; the timing
+  test that flaked under load runs on the pace's own clock
+- 27 Oct, 21:40–22:20 CET, speed (owner; M9 item 5 waited 57 min on verifier rounds 4–5 and 19
+  min on its pre-commit): `/ship` runs the verifier and the review once each, at the same time
+  (`1d3829b`); the Stop hook leaves the tests to a commit in progress (`b444998`); a Markdown
+  file outside `src/` and `tests/` runs only its tests and `test_public_repo.py` (`e1dbdd6`);
+  `scripts/ci.sh` runs the tests on 6 workers, then those marked `serial` alone (`675196f`; the
+  pre-commit hook leaves the staged `ci.sh` in `CI_STAGED` for its test), with the new dev
+  dependency `pytest-xdist` (approved by owner in chat). The whole suite: 18 min 55 s
+  serial (21:07–21:26, 43 of 46 files) against 4 min 8 s on 6 workers (22:05, 3336 passed,
+  `nice` 19), plus 40 s for the 45 serial tests (`test_container.py`, `test_live_limits.py`)
+- 27 Oct, ~22:55 CET (relayed by the session that runs the harness): a movement defect found
+  during M9 item 6 is fixed at once, in its own commit before item 6. In a corner,
+  `_for_the_edge` took an edge that turned the asked change round (braking where the target
+  asked to speed up) for one that merely shortened it, so the other axis's braking cut it and
+  the player ran past his stopping envelope: Hypothesis's tired-limits property found a step's
+  change 0.25 % above the acceleration (0.40099 m/s against 0.40001). The case is an `@example`,
+  the rule pinned from both sides; the 12 v2 matches checked (seeds 0–9, two with chosen
+  clubs) are the same to the bit
 
 ## Schedule: walking skeleton first (agreed by owner, 19 Oct)
 A thin end-to-end slice through all five stages before any stage is deepened. Judges may score
@@ -121,6 +169,7 @@ mutation score is a number in Metrics, not a gate.
 | Guard pass rate | from a run's `summary.json` (built from `handoffs.jsonl`, every chain checked): first attempt = moments whose attempt 1 passes / moments; final = moments ending with a narrative / moments; real Foundry runs only, the Analyst over MCP, seeds 0, 1, 3 (owner, 22 Oct), per model, 23 Oct 10:00–10:35 CEST, `--pace 35` | Haiku 5.5: 28 of 28 first attempt, 28 of 28 final; Sonnet 5.5: 28 of 28, 28 of 28. 0 skipped, 0 crashed. A pass may hold no number: 1 Haiku narrative cites no fact (it did not call the tool; 1 of 28 attempts) |
 | Readings in narratives (M5 item 1) | Sonnet 5.5 runs with the readings (`b18b545`), the Analyst over MCP, `--pace 35`, seeds 0, 1, 3, 23 Oct 18:43–18:58 CEST (`runs/m{0,1,3}/20261023T16…Z` in the `m5-personalize` worktree, gitignored), counted from `handoffs.jsonl`: the Guard → render handoffs, the fact ids of each passed draft's claims; latency = a moment's summed attempt wall time incl. the tool call, nearest rank; smoke runs on m7's first goal before them, one per model; cost at list price from `summary.json` | Guard: 28 of 28 first attempt, 28 of 28 final, 0 skipped. Narratives citing a reading: 28 of 28 (1 reading: 16, 2 readings: 12; M3's runs of 23 Oct: 0, as no reading existed); readings cited: score 19, momentum 14, goal 7 (e.g. "Malik Sennabe scores at 5'. Vellbridge Town take the lead, 1–0. Vellbridge Town are on top."). Requests 56, tokens 422 392 in / 10 783 out, $0.953; latency p50 4.85 s, p95 5.66 s, max 5.77 s. Smoke: Haiku 2 requests, 13 434 / 2 140 tokens, $0.0024, 12.6 s; Sonnet 2 requests, 13 434 / 404, $0.0309, 5.2 s; both pass. M5 calls so far: Haiku 2, Sonnet 58 of 170 each |
 | Fan renditions (M5 item 2) | Sonnet 5.5, the Analyst over MCP plus the Persona Editor (`--persona fan`, role of `605a31e`), `--pace 35`, seeds 0, 1, 3, 23 Oct 20:58–21:25 CEST; counted from `handoffs.jsonl` (the Guard → render lines: the passed narrative and the fan rendition's last draft); numbers = numerals in the text (a score, a clock, a percentage each count 1); latency per rendition = its attempts' wall time, nearest rank; cost at list price from `summary.json` | Narratives 28 of 28 first attempt; fan renditions 28 of 28 passed at the first attempt, 0 fallback; differ from their narrative: 27 of 28; numbers per text: narrative 2 (20) or 3 (8), fan 0 (3), 1 (22) or 2 (3), never above the role's 2; length mean 112 → 84 characters; readings cited 40 → 32 (e.g. A: "Darnell Fenwright shoots and Cian Mulvarra saves at 03:21. Vellbridge Town are on top with momentum at 85%." F: "Darnell Fenwright shoots and Cian Mulvarra saves. Vellbridge Town are on top."). Requests: Analyst 56, fan 28; tokens 422 392 / 10 771 (Analyst), 108 684 / 7 395 (fan); cost $0.952 + $0.291 = $1.244; fan latency p50 2.5–2.8 s, p95 4.6–6.3 s per match. Smoke runs before (m7's first goal): Haiku 3 requests $0.0031, Sonnet 2 × 3 requests $0.041 each; the first Sonnet rendition was a copy of its caption, the second (revised role) was not |
+| Demo runs, generator v2 (M9 item 8) | Sonnet 5.5 (`claude-sonnet-5-5` on `aif-matchlens`): the Analyst over MCP, the Persona Editor (`--persona fan`), the Recap Writer and the Translator (`--lang sk`); `--pace` 35, 10 and 15 s and `--max-calls` 46, 40, 40 / 5 / 56, 48, 48, by v1's rules (3.5 a moment, 4 a translated pair); seeds 0, 1, 3 one after the other, 28 Oct 00:17–01:18 CET, on `1fbf88e` with the CLI on v2; now `demo/runs/m{0,1,3}`. Counted from the logs' Guard → render lines (the translate log's for the recap and the translations) by one script, which gives v1's README numbers exactly on `demo/runs-v1/` (28 of 28; 28 and 27 of 28; 3 of 3; 62 of 62, 1 at the second attempt); time per narrative = a moment's attempts' `latency_ms` summed, each with its MCP call, percentiles by nearest rank (as `explain/summary.py`) | 35 moments (13, 11, 11); narratives 34 of 35 at the first attempt, 35 of 35 at the second (m1-k00773: `phrase_not_cited`, "are on top" with the momentum reading cited but its club not named); fan renditions 35 of 35 passed, 35 of 35 differ from their narrative, one at its second attempt (m0-k00391: `judgement_word`, "lead"); recaps 3 of 3, fan recaps 3 of 3; Slovak translations 76 of 76 passed, 1 at its second attempt (m0-k00272, the analyst's: `phrase_not_cited`, "viac lopty"); time per narrative 4.73 s median, 9.24 s at the 95th percentile (rank 34 of 35: m1's moment at 41:37, two attempts); 191 requests, $2.399 at list price from the summaries (estimate $2.3 ±30 %, about 190); 61 min |
 | Persona switch (M5 item 3) | `matchlens cues --seed 0 --run runs/m0/20261023T185842002Z` (item 2's Sonnet run, `m5-personalize` worktree), 23 Oct, final code: the replay's stderr; cues whose fan lines differ from the analyst's; numerals on all cards = digit groups (`1–0`, `05:00`, `23.8` count 1 each); page: `matchlens serve` with that run, headless Chromium | 12 of 12 narratives and 12 of 12 fan renditions re-pass the Guard at replay; fan lines differ in 44 of 44 cues (chance 11, goal 1, moment 12, period end 2, window 18); numerals 179 → 50; one SSE stream across the switches, 0 console errors; screenshots `runs/screens/m5-item3-{analyst,fan}.png` (gitignored). m7 without a run: 35 of 50 cues differ (the 15 stats-only moments read the same) |
 | Recap Writer (M5 item 4) | `matchlens recap m<s> --run DIR --persona fan` on Sonnet 5.5, seeds 0, 1, 3, 24 Oct 15:42 CEST (round 3, in item 2's run dirs of the `m5-personalize` worktree, gitignored), summed from each run's `recap.json`; latency = the attempt's wall time; cost at list price; length in characters from `recap.jsonl`. Replay 25 Oct after S1: `matchlens cues --seed <s> --run DIR` over every stored run (the 22 run dirs of `m3-explain`, `m5-personalize` and `m6-deploy/demo`), its stderr counts | Recaps 3 of 3 and fan recaps 3 of 3 passed at the first attempt, 0 fallback; requests 6 (writer 3, fan 3); tokens writer 13 743 in / 1 354 out, fan 12 771 / 571; cost $0.041 + $0.031 = $0.072; latency writer 3.74–4.30 s, fan 2.19–2.39 s (one recap per match, so no percentiles); length 202–248 characters (fan 66–77) of 600 (e.g. "Vellbridge Town 1–0 Quarrendale Rovers. Malik Sennabe scores at 5', and Vellbridge Town take the lead. Vellbridge Town have 52% of the ball, an even share of the ball, and Quarrendale Rovers are chasing the game." F: "Vellbridge Town 1–0 Quarrendale Rovers. Vellbridge Town are in the lead."). Earlier rounds 24 Oct, from the item's record (their files were replaced by round 3): Haiku smoke 2 requests $0.0029; Sonnet round 1 (13:08 CEST) 7 requests $0.090, round 2 (13:13) 6 $0.073, redone for prompt and Guard fixes (round 1 wrote "beat", "lose 0–1 to"). Replay: 147 narratives, 31 fan renditions, 3 recaps and 3 fan recaps (184 texts of 25 logs) re-pass, 0 refused |
 | Favourite club (M5 item 5) | `matchlens serve --seed 0 --seed 7 --run runs/m0/20261023T185842002Z` (item 2's Sonnet run, `m5-personalize` worktree), headless Chromium, 25 Oct 10:11 CET, `?match=m0&team=vel&speed=1000&hz=1` to the end: cards in the rail by class; contrast of the accent text = WCAG 2.x ratio of the computed text colour on what is under it (chip: its 15% tint over the card), lowest over the not-dimmed cards, measured by the round-2 verifier with its own code in the browser, and the same from the test's oracle per club | 45 cards: 14 of VEL (chance, goal, moment) on top, 10 of QRD dimmed, 21 of no team; accent `#cb9aa9` (VEL's `#8B1E3F` 11 steps toward white); lowest accent-text contrast VEL 4.656, COR 4.855, SLT 4.529, QRD 9.062 (both methods agree; the primaries themselves 1.60, 1.57, 3.97, 9.06); dimmed cards' accent text 2.2–2.65 by design; 0 console errors; screenshots `runs/screens/m5-item5-{picker,vel-analyst,vel-fan}.png` (gitignored); `tests/test_web.py` 12 tests in 75 s |
@@ -130,12 +179,16 @@ mutation score is a number in Metrics, not a gate.
 | Demo recording | `scripts/record_demo.py`, 22 Oct: m7 at 30×, 60 s of replay, then a card's evidence and its place; Playwright video 1920×1080, length from the file header (Playwright's ffmpeg) | 65.7 s (65.0 s recorded), 28.28 MB, VP9 25 fps, `runs/` (not in git); 23 Oct with moments: m0 with its Sonnet 5.5 run (`--run`, 12 of 12 narratives), 30×, 45 s, then the newest moment card's evidence: 50.9 s (50.0 s recorded), 22.71 MB |
 | Match generation | `generate_match(seed)` incl. `validate_match`, mean over seeds 0–49, 19 Oct | 0.42 s per match (50 seeds in 21.2 s) |
 | Tracking render | `list(match.frames())` for seed 7, 56 768 frames at 10 Hz, 19 Oct (verifier) | 4.9 s |
+| Generation + frame pass, v1 and v2 (M9 item 6) | `generate_match` / `generate_match_v2` (incl. `validate_match`) and one `frames()` pass, seeds 0, 1, 3, one process, 27 Oct 23:14–23:15 CET (load average 3.0–5.2, other sessions running), wall time (CPU time within 0.01 s): `m9-generator` `1ef880f` before item 6, then item 6 | Before: v1 0.22–0.26 + 2.98–3.17 s = 3.20–3.43 s; v2 8.57–8.85 + 3.04–3.21 s = 11.62–12.06 s. Item 6: v1 0.19–0.24 + 1.90–1.96 s = 2.10–2.20 s; v2 6.64–7.07 + 1.30–1.31 s = 7.95–8.38 s (57 088–58 480 frames, every one simulated, no longer interpolated). The plan's budget, twice 0.25 + 4.9 s = 10.3 s: kept; twice v1 measured beside it before item 6 (6.4–6.9 s): not, by 1.2–1.3× |
+| Server memory, three v2 matches (M9 item 6) | scratch `/tmp/m9s/mem/serve.py`: `create_app` of m0, m1, m3 as `matchlens serve` builds it, without logged runs and without the public limits (they refuse speed 0), then `/matches/<id>/live?speed=0` of each match at 5, 10, 2 and 1 Hz one after the other; `VmRSS` / `VmHWM` of the server from `/proc`, 27 Oct after 23:15 CET | v2: 83 MiB at bind (after 17.9 s, the three generated first), 86 MiB ready (28.7 s), after the 12 streams VmHWM 136 MiB (139 708 kB); v1 in the same run: 85, 86 and 142 MiB (145 764 kB). The tracking of a v2 match: 5.3 MB of bytes (2 603 508–2 742 336 a period). Within the container's 512 MiB, M6's margin kept |
 | Calibration (means over seeds 0–49, 19 Oct) | passes / accuracy / shots / goals / fouls / throw-ins / corners | 1156 / 0.84 / 22.2 / 2.14 / 22.3 / 31.4 / 3.7 |
 | SSE schedule error | `emitted_at_ms` minus planned time, match 7 at speed 20 over 5 s, local uvicorn, 19 Oct (verifier) | 0 to 2.35 ms |
 | SSE speed-0 replay | one full match (1 589 messages, 0.59 MB) through `replay` without sending, 5 runs, 19 Oct | 11.8–12.5 ms |
 | Possession | `stats.possession` over seeds 0–49, 20 Oct: `spells()` time per match (mean; max, 6 runs) / spells per match, team-less ones included / share of playing time without a team / share of playing time with a loose ball (part of the former) / home share from `possession()` | 2.1–2.3 ms; 6.2–9.5 ms / 480–584 / 16.4 % (13.2–20.6) / 2.3 % (1.8–3.0) / 44–55 %, mean 50.1 |
 | Pass quality | `stats.passing` over seeds 0–49, 20 Oct: `pass_ratings()` time per match (mean, 2 runs; max) / difficulty of complete passes: mean, p10–p50–p90, range / progressive passes per team and match / average length per team and match | 19.7–23.3 ms; 26.0 ms / 37.4, 24–37–52, 5–71 / 87–137, mean 111.3 / 20.7–21.8 m |
 | Speed and distance | `stats.speed` over seeds 0–49, 20 Oct: player speed between frames, to 0.05 m/s, p50 / p90 / p99 / p99.9 / max / distance per match, outfield and keepers / shot speed p50 / p80 / max, shots below 15 m/s / tags per match: hard shot (28 m/s), sprint (7.0 m/s) / `movement(m.frames())` per match incl. frame generation | 1.20 / 5.95 / 6.05 / 6.50 / 7.20 m/s / 10.45–14.61 km (median 12.71), 4.21–5.01 km / 23.1 / 27.9 / 32.0 m/s, 104 of 1 110 / 4.16 (1–10), 1 in 50 matches / 4.2 s |
+| Player movement (M9 baseline) | `/tmp/plhack-motion/measure.py` (a scratch script outside the repo) on `main` `c1d44e1`, 27 Oct, seeds 0 and 3, every 10 Hz frame of `Match.frames()`: outfield speed between frames and its change over 0.1 s (acceleration); a line (DF, MF, FW) rigid when it moves faster than 1 m/s and each of its players' velocity is within 0.05 m/s of the line's mean; the keeper's distance from his goal line and his y against the posts; with the ball in a side's own penalty area, its deepest defender's distance from the goal line; length and width of a side's 10 outfield players in and out of possession (possession: the side of the last pass, shot, clearance, recovery, interception, won tackle or regaining pressure); with the ball within 1 m of an outfield player of the side in possession, the nearest opponent; players beyond the halfway line at each kick-off; attackers and defenders in the penalty area at each corner | seed 0 (seed 3): outfield time above 5.5 m/s 14.5 % (13.4 %), at 5.9–6.1 m/s 11.7 % (seed 0 only); acceleration p99 48.01 m/s² (46.1), max 123.88 (125.1), above 6 m/s² 8.6 % (7.8 %); rigid lines 60.1 % (59.5 %) of the time a line moves; 8 or more of a side's 10 outfield players above 4 m/s at once 21.3 % (20.0 %); keeper 1.5 m from his line at p50, p90 and p99 (seed 0 only), outside the posts' y 68.5 % (66.6 %); deepest defender p50 1.34 m (1.53) from the line, within 2 m 62.6 % (63.2 %); length p50 48.27 m in possession, 45.92 out (48.36, 45.82), width p50 50.0 m in and out (50.0, 50.0); nearest opponent p50 6.41 m (6.43), within 3 m 21.1 % (20.5 %); 5 players beyond the halfway line at each of 3 kick-offs (each of 7); 2 attackers and 6 defenders in the area at each of 3 corners (each of 3) |
+| Player movement, real reference (M9 item 1) | Sportec Open DFL Dataset (Bassek, Rein, Weber, Memmert, Scientific Data 2025, doi 10.1038/s41597-025-04505-y; data figshare 10.6084/m9.figshare.28196177, CC BY 4.0 with the DFL's permission, checked in the article's Data Records 27 Oct; downloaded from its mirror `huggingface.co/datasets/pysport/idsse-data` (cc-by-4.0) because figshare answers the devbox 403): 7 matches of 2022/23, 2 of the first division and 5 of the second, 25 Hz. Downloaded to `/tmp/plhack-dfl/data` only, outside the repo; `/tmp/plhack-motion/dfl_bands.py` (a scratch script, prints no names) resamples the tracking linearly to 10 Hz and applies the Metrics row Player movement's definitions, with two differences: possession is the data's own ball-possession flag, and lines come from the lineup's position (keeper; centre- and full-backs; strikers; the rest midfield); kick-offs by the event's time, corners at the event's start frame; per player the data's smoothed speed (10 Hz differences carry tracking glitches up to 641 m/s); 27 Oct 09:00 CET. Each value: the median of the 7 matches [their min–max] | outfield time above 5.5 m/s 2.52 % [2.14–2.71]; acceleration p50 1.41, p90 3.04, p99 6.02 m/s² [5.83–6.40], max 156–6409 (noise), above 6 m/s² 1.06 % [0.94–1.35]; rigid lines 0.02 % [0.00–0.11]; 8 or more of 10 outfield players above 4 m/s at once 0.93 % [0.53–1.29]; keeper from his line p50 14.26 m [13.22–16.62], with the ball in the opponent's half 21.31 [18.90–24.34], outside the posts' y 34.8 % [27.5–40.3], within the posts plus 1 m 74.3 % [69.4–80.3]; with the ball in its own penalty area the deepest defender p50 9.65 m [6.90–14.40] from the line, within 2 m 5.0 % [2.1–9.3]; length p50 35.0 m in possession [32.0–35.6], 31.8 out [29.5–32.6], width 43.6 in [37.2–45.9], 35.6 out [31.2–37.6]; nearest opponent to the ball's holder p50 4.23 m [3.62–5.37], within 3 m 34.4 % [26.8–42.2]; kick-offs: 0 players beyond the halfway line at 24 of 32, 1–8 at the other 8 (presumably the event's clock against the tracking's); corners (57): attackers in the area p10 2, p50 5, p90 6 (0–8), defenders p10 8, p50 10, p90 11 (6–11); the 76 outfield players who played a whole match: 9.46 / 10.56 / 11.69 km (p10 / p50 / p90), top speed 7.99 / 8.54 / 9.19 m/s (7.38–10.08), sprints above 7 m/s for 1 s or more 3 / 8 / 15 (1–28) |
 | Analyst on Foundry over MCP, smoke | `matchlens explain m7 --until 05:00 --mcp … --max-calls 2` per model (m7's first goal, the facts read with `facts_at`), 23 Oct 09:35 CEST; tokens and requests from `summary.json`, latency = the attempt's wall time incl. the tool call; one attempt per model, so no spread | Haiku 5.5: 2 requests, 11 467 in / 845 out, 11.9 s, $0.0016, Guard pass · Sonnet 5.5: 2 requests, 11 467 in / 328 out, 5.2 s, $0.0262, Guard pass. 2 of the 170 calls per model |
 | Explain over MCP, `--fake` | `matchlens mcp --http --seed 7` + `matchlens explain m7 --fake --mcp …` (the `echo` Analyst calls `facts_at`), 22 Oct: requests per attempt / a moment's latency incl. the MCP call, p50; p95 / wall time incl. process start / no server; a server without the match | 2 (30 for 15 attempts) / 38–50 ms; 54–67 ms / 3.2–3.6 s / exit 1 before any request |
 | Explain workflow, `--fake` | `matchlens explain m<s> --fake` (the `echo` Analyst, no model), seeds 0–4, 22 Oct 00:45 CEST: moments per match / wall time per match incl. process start, generation and the AF import (`/usr/bin/time`) / `handoffs.jsonl` size | 12, 7, 15, 9, 11 (54), all narratives on attempt 1 / 1.93–2.31 s / 312–676 kB |
@@ -153,6 +206,7 @@ mutation score is a number in Metrics, not a gate.
 | MCP response size | m7, 20 Oct, in-memory client: text blocks plus structured content; facts without id lists (`event_count`, `frame_count`) against the same facts with them | `match_facts` 0.143 MB (0.837 with ids); `facts_at` at the final whistle 21 kB (221); `fact_evidence` of the match possession fact 49 kB. After item 4, 21 Oct, same client: `match_facts` 0.161 MB, `facts_at` at the final whistle 33 kB, `fact_evidence` of the match chaos fact 49 kB (with ids not re-measured) |
 | Container | `scripts/container.sh` (M6 item 1), 23 Oct 16:09–16:54 CEST, docker 29.6.1 on the devbox (8 cores, load average 1.1–2.1, other sessions running), `linux/amd64`, `--memory 512m`, `CPUS` 0.25 (3 runs) / 0.5 (1) / 1 (2); the three `/live` requests one after the other, so each also waits for the queued cue timelines (one match after the other in the app's worker); size: `docker image inspect` `.Size` (compressed content under Docker 29's containerd store; the verifier's `docker save \| gzip`: 69.6 MB) and `docker image ls` on disk; memory: `VmHWM` of PID 1 after the three `/live` heads (kB = KiB) | image 70.1 MB, 318 MB on disk (first build with uv copied in: 95.7 / 406 MB; with the stdlib compiled: 76.0 / 342 MB and no faster, so left out). Cold start to `/healthz`: 28.2–29.9 s / 9.0 s / 4.1–4.4 s. First `/live` message of m0, m1, m3 after start: 86.6–93.1, 144.6–153.9, 201.2–215.7 s / 24.9, 40.2, 53.2 s / 10.2–10.6, 16.6–16.8, 22.9–23.0 s. Memory 108.3–109.1 MiB in all runs. `docker stop` with a stream open: 20.7–21.8 s, exit code 0 in all runs (graceful timeout 20 s, ACA kills at 30 s). PID 1 is Python as uid 10001; 12, 7, 9 of 12, 7, 9 narratives at replay |
 | Container, M5 demo runs | `scripts/container.sh` in `m6-demo-m5` (M5's demo runs), 25 Oct, docker 29.6.1 on the devbox (load average 1.3–1.6, other sessions running), `linux/amd64`, `--cpus 0.25 --memory 512m`: before the startup fix (ended 23:24 CET), `main` with M3's runs (`f2b50b9`, ended 23:28) and after the fix (ended 23:37); `matchlens serve` with the container's arguments at full CPU, no limit (23:14) | image 70.5 MB content, 324 MB on disk; cold start to `/healthz` 206.03 s (before the fix 211.82 s, `main` 202.39 s; full CPU 19.1 s), `/readyz` 200 at 206.06 s, at once; first `/live` message 0.39–0.90 s after its request; server memory VmHWM 137 412 kB (134 MiB); `docker stop` with a stream open 21.93 s, during the cold start (86.1 s in) 0.88 s, at `/healthz` (205.1 s in) 1.49 s, exit code 143 each; replay: 12 + 7 + 9 narratives, as many fan renditions, 24 + 14 + 18 Slovak translations and every recap and fan recap shown, 0 refused |
+| Container, generator v2 (M9 item 8) | `scripts/container.sh` (`ready_limit_s` 480) on the item's tree (`1fbf88e` with item 8's changes), 28 Oct 02:02–02:21 CET, docker 29.6.1 on the devbox, `linux/amd64`, `--cpus 0.25 --memory 512m`; before it, a scratch script polling `/healthz` and `/readyz` every 0.1 s with no limit (01:44–01:51 CET, a verifier's CI beside it, load average up to 2.7) after container.sh's first run stopped at its old 240 s | cold start to `/healthz` 422.83 s (scratch run 420.15 s; v1's 211.8 s), `/readyz` 200 at 422.88 s, at once; first `/live` message 0.88–1.08 s after its request; replay: 13 + 11 + 11 narratives, 0 refused; server memory VmHWM 144 832 kB (141 MiB; scratch run 131 412 kB); `docker stop` with a stream open 21.81 s, during the cold start (323.29 s in) 0.87 s, during the warm-up (428.59 s in) 1.54 s, exit code 143 each |
 | Readiness and stop | M6 item 2, 23 Oct. Local: `matchlens serve` of m0, m1, m3 with the demo runs on the devbox, `/healthz` and `/readyz` polled every 0.1 s from the start (scratch script), then one `/live?speed=0&hz=5` of m3 and SIGTERM; `tests/test_container.py`'s stop script timed 5 times per phase. Container: `PORT=8767 scripts/container.sh` at 0.25 vCPU / 512m, ended 17:36 CEST (load average 1.1–1.8), `/readyz` polled each second; early stops after the first run's replay check is logged (cold start, `/healthz` not yet answering) and at `/healthz` (warm-up). Unhandled window: `python -c "import matchlens.cli"` timed 5 times with `/usr/bin/time` | Local: `/healthz` 200 at 2.7 s; `/readyz` 503 pending m0, m1, m3 → m1, m3 at 7.9 s → m3 at 12.9 s → 200 at 17.9 s; m3's stream after it 200, 20.9 MB; SIGTERM when ready: exit 143 in 0.26 s. Stop script: cold start 0.064 s (all 5), warm-up 0.21–0.27 s, exit 143. Container at 0.25 vCPU: `/healthz` 28.9 s, `/readyz` 503 at that moment, 200 at 211.2 s (first `/live` message of m0, m1, m3 at 91.5, 151.8, 211.4 s); memory 108.9 MiB (VmHWM); `docker stop` with a stream open 21.7 s, exit 143; during the cold start (22.4 s after the start) 0.88 s, exit 143; during the warm-up (27.8 s) 1.44 s, exit 143 (item 1's verifier: 30.3 s, exit 137). Second run after the review fixes, ended 18:17 CEST (load average 1.2–3.0): `/healthz` 14.5 s, `/readyz` 200 at 189.7 s (first `/live` of m0, m1, m3 at 65.7, 126.6, 189.6 s), 147 `/readyz` probes during the warm-up: median 0.178 s, **max 1.586 s** (`curl` `time_total`); stops 21.8 s / 0.90 s (cold start, 22.5 s) / 1.43 s (warm-up, 29.1 s), all exit 143. Unhandled SIGTERM window (interpreter start + `matchlens.cli` imports): 0.07–0.11 s locally, at 0.25 vCPU ≈ 0.3–0.5 s (estimate, ×4 for the CPU quota, ±50 %) |
 | Stream resilience | M6 item 4, 23 Oct 19:51–19:52 CEST, devbox: `matchlens serve` with the container's arguments (seeds 0, 1, 3, their demo runs, graceful 20 s), the page `?match=m0&speed=30` in headless Chromium (Playwright 1.64), scratch script `/tmp/m6probe/realrun.py`: SIGTERM at clock 03:01, restart on the same port once it exited; then every `/live` answered 503 by `page.route`, SIGTERM, restart 8.5 s after the cut with the 503s off. Page states timed by `performance.now()` in the page, requests by Playwright's events. Rerun by the verifier: the same behaviour | Restart: the stream ran on until the graceful 20 s were over (exit 143); the browser retried 1.0 s apart (refused); the 4th retry reached the new server and resumed with `Last-Event-ID: m0-f007872` (= the clock shown, 13:07); live 8.2 s after the cut, before `/readyz` 200 (m0's timeline is computed first). 503: the browser's own retry 1.0 s after the cut, then the page's reopens at +1.0, +2.0, +4.0, +8.0 s, each with `last_event_id=m0-f018064`; the 4th reached the restarted server, live 16.7 s after the cut. Whole run: 9 079 clock values 00:00 → 30:15, steps of 0 or 1 s only (none back, none skipped); 16 cards, all distinct; 8 console errors, only `ERR_INCOMPLETE_CHUNKED_ENCODING`, `ERR_CONNECTION_REFUSED` and 503 |
 | Deploy | M6 item 3, 23 Oct 23:41 – 24 Oct 00:01 CEST, revision `ca-matchlens--5b18038` at 0.25 vCPU / 0.5 GiB: `scripts/deploy.sh` twice for the same commit; ACA's system and console logs (`az containerapp logs show`, timestamps converted from UTC); `az monitor metrics list` per-minute maxima. From the devbox: `curl -sv --http2`; `/live?speed=1` read with httpx (51 messages); `/events?speed=1` resumed at `Last-Event-ID: m0-e00096`, so the 37 s pause after m0's first goal comes first; scratch script `/tmp/m6deploy/urlrun.py`: the page `?match=m0&speed=10` in headless Chromium (Playwright 1.64) for 300 s with a raw `/live?speed=10` beside it, then the page `?match=m1&speed=10` with `az containerapp revision restart` 20 s after it went live and `/healthz` polled every 0.5 s | First run 4 min 49 s (23:41:05–23:45:54): LA 34 s, ACR 16 s, build + push 13 s (layers cached), env 1 min 52 s, app 40 s. Revision created 23:45:01, image pulled in 3.75 s (69.2 MB), container started 23:45:12, `/healthz` bound 23:45:16, `/readyz` 200 at 23:45:42: **30 s after the container's start** (devbox `--cpus 0.25`: 190–211 s; at 1 CPU the last match streamed after 23 s). Second run 16.5 s, nothing created; the script as revised after the review, 24 Oct 13:00, same commit: 24 s, every step "already" (`deploy-rerun2.log`). TLS 1.3, HTTP/2 by ALPN, port 80 → 301 to https. `/live` 1×: headers and first `data:` together at 0.91 s, then 50 gaps median 0.200 s, max 0.201 s (no buffering). `/events` 1× across the pause: heartbeats at 15.12 and 30.12 s, the next event at 37.12 s. Rerun 24 Oct 13:07–13:10 with saved output (`tls.log`, `basics.log`, `heartbeat.log`): TLS 1.3, h2 accepted, 301; first `data:` at 0.52 s, gaps median 0.200 s, max 0.203 s; heartbeats at 15.13 and 30.13 s, the event at 37.12 s. Keep-alive (`keepalive.py`, 24 Oct 13:00–13:06): one client, 70 `/healthz` requests 4.9–5.5 s apart (around uvicorn's 5 s idle close), all 200. 10× past 240 s: **no cut**: the page made one `/live` request in 301 s, clock 00:00 → 46:21 in steps of 0 or 1 s, 0 console errors; the raw stream had 15 938 messages in 300 s and was ended by the client. `revision restart` (23:57:04): **rolling, no 503**: a new replica was scheduled 1 s after the call, started after 23 s and was ready about 48 s after the call; the old one kept the page's stream until 80 s after the call (then SIGTERM's graceful 20 s); the page showed "Reconnecting…" for 1.4 s and resumed with `Last-Event-ID: m1-f010220`, clock in steps of 0 or 1 s, 1 console error (`ERR_HTTP2_PROTOCOL_ERROR`, the cut); all 208 `/healthz` polls 200. Console log of the old replica: SIGTERM 61 s after the call (about 12 s after the new one was ready), the stream cancelled 19.4 s later when the graceful timeout ran out. A first try (23:54:49) ended its watch 62 s after the call, 8 s after the old replica's SIGTERM and before the cut (117 polls, all 200). `WorkingSetBytes` per-minute maxima 136.7–189.0 MiB (189 with two 10× streams and the restart); CPU at most 0.261 cores in a minute. Re-deploy of a new commit (`9de1094`, owner's OK, 24 Oct 17:22:12–17:23:56 CEST, `redeploy.log`, the page `?match=m1&speed=10` open throughout, `redeploy-watch.log`): 1 min 44 s (build 8 s from the layer cache, push, `update --yaml`); the new revision polled `Provisioned Activating None true` 5 times, then `Provisioned Running Healthy true` after 57 s (a fresh revision is active while it warms up and never showed `Failed`); the page kept its stream on the old revision until 43 s after the new one was healthy, then "Reconnecting…" for 1.5 s and resumed with `Last-Event-ID: m1-f017398`, clock in steps of 0 or 1 s, 1 console error (`ERR_HTTP2_PROTOCOL_ERROR`, the cut); all 792 `/healthz` polls 200. Saved in `/tmp/m6deploy/`: `deploy.log`, `stream10.log`, `restart.log`, `restart2.log`, `system-logs.json` and `console-logs.json` (Log Analytics, 23 Oct 23:40 – 24 Oct 00:05 CEST; the files' timestamps are UTC and up to 1 s off `az containerapp logs show`'s), `metrics.json` |
@@ -572,6 +626,42 @@ mutation score is a number in Metrics, not a gate.
   hand mid-stream); a switch closes open "verified" chips; `?persona=xyz` reads as analyst but
   stays in the URL until a click; `aria-live` on the lower third re-announces its cards on a
   switch
+- M9 item 4, set pieces (review 27 Oct, MINOR, realism for item 7): a free kick out wide or a
+  long throw loads no area (no attacker's point reaches 88.5 m: a striker's slot stands at most
+  34 m ahead of a back line capped at 40–55 m) while the defending line drops to its floor of
+  6 m; a wall stands square to the line to the goal's centre, not with its end man on the near
+  post; at a penalty all 19 outfield players wait round the area (real sides keep 2–3 attackers
+  and 1–2 defenders back), the defenders a row behind the attackers; a goal kick ignores the
+  build-up (v1 plays half of them long, yet the side keeps everyone within 46 m of its goal); no
+  defender goes out to a short corner's man; a teammate may stand in the line of a direct free
+  kick 3.5 m off the ball; at a free kick on the goal line beside the area the band squeezes
+  the wall and one of it stands 0.5 m behind a teammate instead of beside him
+- M9 item 5, coupling (27 Oct): at a challenge the ball is at the challenger's feet for one step
+  and back at the carrier's on the next if he keeps it (a poke of up to 1.5 m and back, so that
+  `validate_match`'s actor at the ball holds); a save is made where the keeper's body is, with
+  no dive, so the shot's line bends towards him by up to what his top speed covers in its
+  flight; a thrower, a corner's taker and a penalty's keeper are put on their line in one step
+  (up to 0.71 m in 100 ms: item 7's acceleration limit must exempt them, or they walk onto it);
+  a receiver stops on the landing (braking 1.0) instead of meeting the ball on the move, and
+  the shape's targets have no velocity (item 3's open points); a completed pass still goes 1.5
+  m backwards on average (v1 1.1). Its cost, about 9 s a match, is item 6's (Metrics: Generation +
+  frame pass, v1 and v2)
+- M9 item 6, storage and speed (28 Oct, from its verifier and review; none blocks): v2's
+  exactness is pinned by no test (12 matches checked by scratch scripts, `/tmp/m9s/`; a digest of
+  one seed, or `step` against a frozen copy of the old one, would pin it); a restart's taker is
+  put on his line in one judged 100 ms step, so a league with a corner taker below 7.25–7.5 m/s
+  (by his acceleration, 4.0–6.5 m/s²; a keeper at a penalty below 5.2–5.4) would make
+  `generate_match_v2` raise
+  (the shipped league's margin is a test; waiting until the taker stands is item 7's); `facts_at`
+  builds its arrivals' snapshots from the bytes at each call (v2 m1 at 67:23: 23 ms, v1 20 ms);
+  `Body` is a named tuple, so `dataclasses.replace` no longer takes it and it equals a plain
+  tuple; a negative `start` clock makes a v2 `frames()` raise from `zip`, not "no frame"; older
+  gaps the verifier found in `movement` and `targets` (they survive at `1ef880f` too): `closing`
+  without the top speed, `_SQRT2`'s value, the last clamps of x and y, the keeper added to the
+  opponents a defender marks; the generation plus a frame pass is within the plan's 10.3 s but
+  1.2–1.3 times twice v1 measured beside it (6.4–6.9 s); under a load average of 17 the Stop
+  hook's dev profile failed `test_explain_analyst.py`'s Hypothesis `too_slow` health check (64
+  passed twice alone)
 
 ## Backlog by milestone
 Each milestone gets a plan the owner approves; then items run through `/ship` one by one.
@@ -1508,7 +1598,7 @@ Items, in this order (the first three before the repo goes public):
   verifier PASS (74 mutants of its own, 64 killed, the 10 survivors harmless or as in the
   plain version; every listed name put into the league in memory fails a test, 0 lost),
   its MINOR fixed (an ending tried after an earlier one fits: "-mu" and "-u")
-- [ ] Owner, before the repo goes public (review of the denylist hashes, SERIOUS): the plain lists
+- [x] Owner, before the repo goes public (review of the denylist hashes, SERIOUS): the plain lists
   stay in the history, in `tests/test_league.py` of 91 of `main`'s 101 commits and of every pushed
   branch (method: the plain lists over every file of every commit of `main`, the engine's word
   "reading" left out; no other file and no commit message names one). The history also holds the old
@@ -1520,7 +1610,7 @@ Items, in this order (the first three before the repo goes public):
   place (`git filter-repo --replace-text` plus rewritten messages, then a force-push) would have to
   catch all of the above and would still leave the old commits reachable. Decided by the owner, 26
   Oct: a new public repository from one squashed commit of `main` after M7; `radozaprazny/18_plhack`
-  stays private
+  stays private. Done 26 Oct 23:53 CET: `radozaprazny/footnote` (step (3) of the owner's steps)
 - [x] README for judges (2 h), done 26 Oct in `m7-readme`: the problem (a model on air can
   invent a number or a judgement), the name Footnote and its line, the five stages, a Mermaid
   architecture diagram (three Agent Framework workflows, the Guard's retry edge, the MCP tool
@@ -1662,10 +1752,11 @@ Items, in this order (the first three before the repo goes public):
 - [ ] Owner, in this order, before the submission closes (Wed 28 Oct 07:59 CET): (1) re-deploy the
   final `m7-submission` with `scripts/deploy.sh` (issues #2 and #9 change the app; done 26 Oct
   22:42 CET, `1d5c025`, and 23:30 CET, `23d81ab` with #7; Metrics: Deploy), then merge it
-  into `main` and push both; (2) the history is decided (the item "Owner, before the repo goes
+  into `main` and push both (done 23:51 CET, `c1d44e1`); (2) the history is decided (done) (the item "Owner, before the repo goes
   public" above); (3) create the new public repository `radozaprazny/footnote` from one squashed
   commit of the final `main` (the GitHub noreply e-mail), push it there and disable its two Claude
-  workflows; (4) look at the README's diagram on GitHub; (5) record the video by
+  workflows (done 23:53 CET, Now: Public repository); (4) look at the README's diagram on GitHub
+  (done 26 Oct 23:54 CET); (5) record the video by
   `docs/submission.md` and upload it, public (YouTube, Vimeo, Facebook Video or Youku); (6) pick a
   cover image (footage and stills of `23d81ab`, 26 Oct 23:31 CET: two Playwright takes at
   1920×1080 and seven stills in `~/footnote-media` on the devbox, outside the repo; its
@@ -1698,3 +1789,397 @@ Items, in this order (the first three before the repo goes public):
   the Tagline, Description and Keywords. Create it Mon 26 Oct.
 
 Out of scope: auto-eventing from video.
+
+### M9 Generator v2, realistic movement: approved by owner, 27 Oct (08:55 CET, "please start building the v2 generator, but so that we can still send the current version to the portal now; we should have 2 versions already" (translated from Slovak)) · branch `m9-generator`
+Two versions: `m7-submission` (submitted and deployed) keeps generator v1 and M9 never touches
+it; M9's work lives only on `m9-generator`. On the branch, v1 stays in the code too, unchanged
+and the default, next to v2 until v2 passes item 1's gates and the demo runs are recorded again
+(the last item): the logged runs in `demo/runs/` keep working, and the Metrics compare both
+versions on the same seeds. The stop points below stay.
+Why: the owner found the players' movement in the video unnatural (27 Oct). Measured baseline in
+Metrics (Player movement): the players of a line move together, whole sides run at one speed,
+direction changes in a step, keepers stay on their line, defenders drop onto it, one defender at a
+time goes to the ball, kick-offs break the Laws and corners leave the area nearly empty. The rules ask for
+"synthetic, football-realistic data" (4.7) and judge "optimized synthetic data creation" (6.2);
+the tracking also feeds the speed and distance indicators of 4.1(ii), and a sprint tag fires about
+once in 50 matches (Metrics: Speed and distance).
+When: changed by the owner, 27 Oct (~23:45 CET, "yes" (translated from Slovak) to Claude's cuts):
+v2 goes into the submission before it closes, Wed 28 Oct 07:59 CET; approved by owner, 27 Oct.
+Kept: item 6, item 8 with its billed runs (stop point stays), v2 as the default, the deploy and the
+public repository by the owner. Cut until after the judging: item 7 whole, and the Metrics rows
+beyond the README's Measured results. Each item gets one verifier round and one review at once,
+blocking only on a real bug or a key invariant; CI of the change, the memory budget in the
+container and a smoke test of the live app stay. Go/no-go 05:30 CET: v2 not deployed and
+smoke-tested by then, v1 (`ca-matchlens--23d81ab`) stays live. The plan before: after the
+judging, nothing of it in the live app or the public repository before the freeze ends (Wed 11
+Nov 08:59 CET).
+No new dependencies (pure Python; `array` from the standard library for compact frames). Hours
+are estimates ±50 %, 39 h in all (about 5 working days); the riskiest is item 5.
+Design: two layers. The decision layer (the possession-chain state machine of `generator.py`:
+who acts, how, with what outcome) stays, so the match-level calibration holds after re-tuning. A
+new movement layer moves all 22 players every 100 ms toward targets under each player's limits
+on speed and acceleration, and the events are emitted from the simulated positions on the 100 ms
+grid, so events and tracking still agree by construction, and now at every event (Follow-ups:
+the agreement is asserted only at events on a 100 ms multiple).
+Items, in this order:
+- [x] Reference bands (3 h): the realism gates and their bands. Licence and data done 27 Oct
+  (Metrics: Player movement, real reference): the Sportec Open DFL Dataset, CC BY 4.0 with the
+  DFL's permission; only its aggregates and its citation are in the repo. Metrica Sports' sample
+  data has no licence (its README only asks for credit), so it is not used. Proposed bands, one
+  generated match each (seeds 0–19), by one rule: the 7 real matches' range widened on each side
+  by its own width, at least 10 % of the median; a one-sided gate for an artefact of v1; counts at
+  the real range; the Laws exactly. In brackets the real range, then v1 (Metrics: Player movement):
+  outfield time above 5.5 m/s 1.6–3.3 % [2.1–2.7; 14.5]; acceleration p99 at most 7.0 m/s²
+  [5.8–6.4, with the tracking's noise; 48.0], and every step within the player's own limit (item 2),
+  never above 9 (an estimate from the literature: the real max is noise); rigid lines at most
+  0.2 % [0.0–0.1; 60.1]; 8 or more of 10 above 4 m/s at once at most 2.0 % [0.5–1.3; 21.3]; keeper
+  p50 9.8–20.0 m from his line [13.2–16.6; 1.5], with the ball in the opponent's half 13.5–29.8
+  [18.9–24.3], outside the posts' y 14.7–53.1 % [27.5–40.3; 68.5]; with the ball in its own area
+  the deepest defender p50 at least 5 m [6.9–14.4; 1.34], within 2 m at most 16 % [2.1–9.3; 62.6];
+  length p50 in possession 28.5–39.1 m [32.0–35.6; 48.3], out of it 26.3–35.8 [29.5–32.6; 45.9],
+  width in 28.4–54.7 [37.2–45.9; 50.0], out 24.9–44.0 [31.2–37.6; 50.0], in minus out: length
+  0.7–5.9 [2.4–4.2; 2.4], width 2.8–12.2 [5.9–9.0; 0.0]; nearest opponent to the holder p50
+  1.9–7.1 m [3.6–5.4; 6.4], within 3 m 11–58 % [27–42; 21]; at a kick-off no player beyond the
+  halfway line [the Laws; 5 and 7]; at corners the match's median of attackers in the area 3–6
+  and of defenders 9–11 [the same; 2 and 6]; per match the median outfield player 7.8–12.4 km
+  [9.4–10.9], top speed 7.4–9.8 m/s [8.2–9.0], 3–12 sprints [6–9]. Measured against the earlier
+  estimates: the literature's 10–40 sprints and the keeper within the posts plus 1 m 95 % of the
+  time were wrong (real 3–15 per player, p10–p90, and 69–80 %). v1 already lies inside the
+  nearest-opponent bands and the length's in minus out. Bands approved by owner, 27 Oct (09:19
+  CET, "continue, I agree with everything" (translated from Slovak), with item 2's identities)
+- [x] Club and player data (4 h), done 27 Oct. Identities approved by owner, 27 Oct (09:19 CET,
+  with item 1's bands), as tactics from 0 to 1 (line height, press, width) and a build-up:
+  Corrowmere 4-3-3, a high line, an intense press, wide, short (0.85, 0.85, 0.8); Vellbridge
+  4-2-3-1, middle line and press, narrow, short (0.55, 0.5, 0.35); Quarrendale 4-4-2, a deep block,
+  little press, narrow, direct (0.2, 0.2, 0.25); Saltreach 3-5-2, a line above the middle, a middle
+  press, wide through its wing-backs, direct (0.65, 0.5, 0.75). `matchlens.formations`: the four
+  formations' ten outfield slots, in and out of possession, in the team's frame (dx ahead of its
+  back line, y with L below 34) and `to_pitch`, which turns a team attacking left half round so
+  it keeps its left; the keeper is no slot, he gets his own rule in item 3; the shapes are
+  mirror-symmetric, in possession 34 m long and 44 m wide, out of it 29–30 m and 33–38 m, inside
+  item 1's bands (a test). `league.json`: per player a role and side by shirt number (the four squads share one
+  numbering; Saltreach's #16 and Quarrendale's #18, midfielders, play wing-back and on the wing),
+  top speed, acceleration, stamina and work rate drawn once by a scratch script, uniform in a range
+  per role, rounded to 0.01 (`random.Random("m9-attributes-<player id>")`): GK 6.8–7.6 m/s,
+  4.0–5.0 m/s², 0.55–0.75, 0.30–0.50; CB 8.0–8.9, 4.5–5.5, 0.65–0.85, 0.50–0.70; FB 8.6–9.6,
+  5.2–6.3, 0.75–0.95, 0.65–0.90; DM 7.9–8.7, 4.6–5.6, 0.75–0.95, 0.70–0.90; CM 8.0–8.9, 4.8–5.8,
+  0.75–0.95, 0.70–0.95; AM 8.2–9.1, 5.0–6.0, 0.65–0.85, 0.55–0.80; W 8.9–9.8, 5.5–6.5, 0.65–0.85,
+  0.60–0.85; ST 8.4–9.5, 5.2–6.3, 0.60–0.80, 0.50–0.80. Ids, names, numbers and positions
+  unchanged, and v1 reads only those. `league.py`
+  validates them, both ends of a limit included: top speed 6.5–8.0 m/s for a keeper and 7.5–9.8
+  for the others, acceleration 4.0–6.5 m/s², stamina, work rate and tactics 0–1, no bool; role GK
+  exactly for position GK; a known formation and build-up; enough players of each role for the
+  formation and more in each role group (back, midfield, attack) than it uses. No new names, so
+  the denylists have nothing new to cover. v1 frozen: `test_v1_matches_stay_as_submitted` pins
+  the SHA-256 of v1's matches of seeds 0, 1 and 3 (Vellbridge, Quarrendale, Saltreach), and
+  `test_v1s_view_of_the_league_stays_as_submitted` that of every player's id, name, number and
+  position, both computed before the change; `matchlens generate` writes the same bytes as on
+  the base (verifier: seeds 0–3, 7, 42, 123 and all 12 pairs of clubs). Review: one serious
+  finding, the league's top speeds above `validate_match`'s 9.5 m/s, settled in item 5's plan;
+  the minor ones fixed (the turn onto the pitch, the limits written out in the tests, the tactics
+  in a Hypothesis property, the shapes against the bands, a wrong type named as such) or put
+  into items 3 and 5
+- [x] Movement layer (10 h), in two parts. Part 1, the kinematics, done 27 Oct:
+  `matchlens.movement`'s `step` moves a `Body` 100 ms towards a target at a pace, under `Limits`
+  (top speed, acceleration, both lowered by `Limits.tired` from the 30th minute of a half to at
+  most 10 % less at the 45th for a stamina of 0); `stopping_speed` is the exact braking curve on
+  the 100 ms grid, so he stops on the target, never past it, and `braking_distance` its inverse;
+  a moving target is followed at its velocity plus the closing pace (`target_velocity`), so a
+  pursuer runs with it instead of trailing it by his braking distance (5.25 m at 7 m/s, 6.8 m at 8
+  m/s with 5 m/s²); a target or pace that is no number, or a negative pace, is refused; targets stay 0.5 m inside the pitch
+  (`EDGE_BAND`) and he brakes for an edge at acceleration / √2, braking first, so a turn in a
+  corner keeps him on the pitch within his limits. Properties over the validated ranges (any
+  sequence of targets and paces from rest: never above the top speed or the acceleration, never
+  outside the band, the velocity the step itself; from rest to the target and stopped on it
+  within 25 s; a pace of 0 stops him; tiring step by step keeps the tired limits, edge
+  braking within 0.1 % of them), turns at the touchlines and out of the corners pinned for four
+  extreme limits, the constants written out; targets that move in the properties and in seeded
+  runs (seeds 128 and 1398 caught two near-miss mutants of the edge braking), a pursuer pinned on
+  the target from both sides, every clamp of a target pinned off its axis. Verifiers: 60 M and
+  120 M steps of their own harnesses (moving targets included) without a breach, the full CI
+  green in round 1; a hand-built body running at an edge faster than he could stop from
+  is braked at once, beyond his acceleration (documented: a body moved only by `step` never is).
+  Review: no bug in the arithmetic; the trailing of a moving target and the cost fixed (only the
+  edge ahead is checked, by its braking distance: the same trajectories to 1e-13 over 308 000
+  steps, 2.70 µs a step instead of 3.62, 3.2 s for a match's 22 × 54 000 steps; `targets` of the
+  part 2 draft costs 0.082 ms a call, so it runs at 2–5 Hz, item 6). Into part 2: a gentler braking
+  for an ordinary arrival than for an edge (full braking at every stop looks robotic), and a
+  `time_to_reach` that agrees with `step` for item 5's "where he can arrive". Into item 4: a
+  thrower on his touchline and a keeper on his line at a penalty are placed there, not walked
+  through the band. Limits change only slowly (fatigue); a carrier is slowed by his pace. Run:
+  `slt-p17` (W, 9.73 m/s, 5.54 m/s²) covers 10 m in 1.9 s and 30 m in 4.0 s, `cor-p06` (CB) in 2.0
+  and 4.5, `qrd-p01` (GK) in 2.2 and 5.1; from full speed to half speed the other way in 2.1–2.7
+  s. A constant acceleration up to the top speed is the model (real sprinters accelerate less as
+  they get faster). Part 2, the targets, done 27 Oct:
+  `matchlens.targets.targets` gives every player an `Aim` (a point, the pace to close on it, the
+  point's own velocity, a braking share) for a `Moment` (the ball, the side in possession, the
+  carrier and his carry, the receiver and where and when the ball lands, the period), the first
+  rule that applies: the carrier's carry and the receiver's landing, a keeper too (the receiver at
+  the lowest pace that gets him there in time, run-up and braking included: `movement.
+  pace_to_arrive`, a bisection over `step`); one or two pressers on the other side's carrier, a
+  keeper too (two from a press of 0.5, within 6–20 m by press, never the receiver), the first
+  goal-side of the carrier 0.3 s ahead, the second covering 4 m goal-side and 3 m inside him, both
+  at his velocity with full braking, never nearer each other than 2 m (in front of his own goal
+  both points end on its line, so the cover steps aside: found by the second verifier); the keeper on the line from his goal's centre to the ball, 2
+  m deep with the ball 10 m out and 0.3 m deeper per metre beyond, at most 22 m, and with the ball
+  in his half at least 1.5 m behind his back line; defenders with an opponent within 12 m of their
+  slot goal-side of him (0.6 of the way from the slot), running with him when within 6 m; runs in
+  each player's own shifted window of 8 s, for its first 4 s, at odds of work rate × 0.25 (a
+  full-back overlapping on the ball's side, a winger coming inside, a striker on the offside line),
+  only with the ball past halfway, held onside; everyone else on his slot of the shape for the
+  phase: the back line behind the ball (out of possession 27–19 m behind it and at most 28–45 m
+  out by line height, never deeper than 6 m; in possession 30–24 m behind it, at most 40–55 m),
+  each player following its moves from where it rests with the ball on halfway by his own share
+  of 0.75–1, so lines never move in lock-step; the width × 0.85–1.15, a lean to the ball's side of
+  0.40 out of possession and 0.25 in it, a drift of up to 2 m (a sine per axis, 25–45 s, by
+  player, period and seed), then attackers held onside (the second-last opponent, the ball,
+  halfway). Paces: a walk within 1 m, then 0.8 m/s plus 0.3 per metre up to a jog's cap of 2.6–3.8
+  m/s by work rate, from 25 m a ramp to a run of 5.0–6.5 at 40 m; an ordinary arrival brakes at 0.6
+  of his acceleration (`step`'s new `braking`, from 0.25 to 1). All in the team's frame, turned
+  onto the pitch by `formations.to_pitch`. A carrier without a carry or a receiver without a
+  landing in a positive time is refused. Properties over moments with a carrier, a receiver
+  (keepers included) or neither: every aim inside the band, at a pace he can run, with a finite
+  velocity; a moment turned half round turns every aim; in possession every attacker but the
+  carrier and the receiver aims onside (a drift added after the clamp could carry him up to 2 m
+  past the line, found while writing this property and fixed); the keeper aims at
+  `keeper_point`; the braking share drawn in part 1's properties. Pinned: the marking radius and
+  the running-with distance from both sides, two pressers on two points, a keeper carrying,
+  receiving and pressed, the keeper behind his line for every club, runs (halfway from both
+  sides, the full-back's side, a run's 4 s, a winger's and a striker's points), the pace's ramp,
+  the constants, two pressers apart at every place of the carrier; `pace_to_arrive` the lowest pace
+  that gets him there in time (a property over moving bodies), wired with the receiver's velocity.
+  Cost: 0.082 ms a call for all 22 before the review's changes (a receiver adds a
+  bisection of about 400 steps), so it runs at 2–5 Hz (item 6). Verifier (15 minutes: lint, 177
+  tests, the toy run) PASS; review: six serious findings (a receiver late by v/a and stopping
+  dead, a keeper never carrying, receiving or pressed, two pressers on one spot, lines in
+  lock-step under a jog's cap of at least 4 m/s, a jump of the pace at 25 m, the marking and the
+  runs untested), all fixed above; open for item 5: a receiver meeting the ball on the move, an
+  assignment of markers with hysteresis, shape targets with a velocity. Third round, without a
+  verifier (the owner's decision): three tests where the boundary decides (a receiver 15 m from
+  rest in 3.2 s needs 8.25 of his 9.0 m/s and is late at 7.2; an overlap and a cut-in on, 0.1 m
+  short of and 0.1 m past the point where the offside line less 0.5 m takes over; a slot past
+  the line held exactly 0.5 m short of it), and the four mutants they target (the bisection
+  capped at 0.8 of the top speed, the margin dropped at the overlap, the cut-in and the clamp
+  after the drift) each fail them, the drift's also the onside property. Run on a toy decision
+  loop (`/tmp/plhack-motion/proto_sim.py`, outside the repo: carries of 1–4 s, passes to a mate
+  8–35 m off at 15 m/s, a turnover when an opponent is nearer the landing or at odds of 15 %,
+  possessions of 15–25 s, no dead ball), 10 minutes each, against item 1's bands: cor v qrd (vel v
+  slt) outfield time above 5.5 m/s 0.87 % (1.19) [1.6–3.3]; acceleration p99 6.42 m/s² (6.14) [at
+  most 7.0]; rigid lines 0.03 % (0.29) [at most 0.2]; 8 or more above 4 m/s 0.0 % (0.0) [at most
+  2.0, before the review 2.61 and 4.15]; keeper p50 14.2 m (14.4), in the far half 16.95 (17.03),
+  outside the posts 23.9 % (19.7); deepest defender p50 8.95 m (6.88), within 2 m 0 % (0); length
+  in and out of possession 35.0 and 30.2 m (34.1 and 27.9), width 42.7 and 37.7 (42.9 and 37.5);
+  nearest opponent to the holder p50 3.06 m (3.49), within 3 m 49.3 % (43.9). Missing against the
+  bands: too little time above 5.5 m/s in both, vel v slt's rigid lines and its length in minus out
+  (6.2 m against at most 5.9); the toy has no dead ball, sprints in behind or chases of a loose
+  ball, so they are judged in item 7 on real v2 matches. Item 7's properties over the whole
+  validated range of every limit and tactic stay
+- [x] Set pieces (4 h), done 27 Oct; the dead ball moved to item 5 (the owner's decision, 27
+  Oct): `matchlens.setpieces.layout` gives every player an `Aim` for a restart (its kind and
+  spot, the taker, both sides, where everyone is), worked out in each side's frame. The Laws,
+  each with a margin of 0.5 m: at a kick-off everyone in his own half and the opponents outside
+  the circle; at a goal kick the opponents outside the taker's area (their back line by their
+  press, 30–65 m, so from a press of about 0.8 the striker waits on the area's edge); at a
+  corner 5 attackers in the area (4 when the taker is one of them) and 9 defenders and the
+  keeper, from fixed spots by role, mirrored for either flag, the opponents 9.15 m off the
+  corner arc; at a free kick the opponents 9.15 m off the ball, within 30 m of the goal's centre
+  a wall square to the line to it (4 nearer than 20 m, 3 nearer than 25, else 2) and the keeper
+  on his line behind it, and in the taker's own area the opponents out of it as at a goal kick;
+  at a throw-in the opponents 2 m off; at a penalty everyone but the taker and the keeper
+  outside the area and the arc and behind the mark. Players are placed one by one, the taker at
+  the spot first, then the other side (its wall first), then the taker's teammates: each on his
+  point, pushed straight off the ball (or the centre, the mark, the flag) if too near, or else
+  on the nearest point on rings 0.25 m apart round it that keeps his side's rule, the band and
+  0.5 m off everyone placed; at a free kick and a throw-in the teammates keep 3 m off the ball,
+  and 1 m off a wall of three or more (Law 13).
+  So the band never pulls a player back within a distance (a straight push left one 7.5 m from
+  a free kick at (86, 8): found by the first verifier), and no two players share a point (at
+  every corner the attackers' spare man and the defenders' outlet did, and a striker stood on
+  a free kick's spot: the review's two serious findings). The taker aims at the spot clamped
+  into the band. Paces as in `targets` (`pace_to`: a walk, a jog, a run from far), never above
+  his top speed, braking 0.6; the keeper of the side taking a free kick or a throw-in in its
+  half behind its back line. Refused: a taker of the other side, both sides attacking one way,
+  a spot off its place by more than a micrometre (the centre, the mark, a flag of the defending
+  side's goal line, a touchline, the taker's goal area), a free kick in the defending area (v1's
+  `in_penalty_area` formula, so the two agree to the last bit). Tests (22, 3 of them
+  properties, 441 cases): the Laws for all 12 ordered pairs of clubs both ways and any taker;
+  properties over a free kick anywhere outside the defending area, a throw-in anywhere on both
+  touchlines and a goal kick anywhere in the goal area; every 2 m within 8 m of an edge; the
+  boundaries from both sides (the wall's 20, 25 and 30 m, the defending area's line, the
+  area's margin by the striker at 87.75, 88.25 and 88.75 m, the refusals); each distance shown
+  binding; the Laws' constants written out. Sweep outside the repo (free kicks on a 1 m grid,
+  throw-ins every 0.5 m, goal kicks every 0.25 m, both corners, the kick-off and the penalty, 24
+  pairings): 209 880 layouts without a breach, the nearest opponent at exactly 9.65 and 2.5 m,
+  the nearest two players 0.50 m apart; 0.20 ms a layout, at most 5.1 ms. `tests/lineups.py`
+  holds the lineups `test_targets` and `test_setpieces` share; `targets.band` is public.
+  Verifiers: round 1 FAIL (the band check of the push and the Laws' constants unpinned, both
+  fixed), round 2 PASS, round 3 after the review's fixes PASS (563 tests, 125 mutants: every
+  survivor equivalent or one of two guards of one invariant); review: the two serious findings
+  above, fixed, and of the minor ones the corner's distance from the arc, the keeper behind his
+  line, the area test and the refusals fixed, the rest under Follow-ups (realism, for item 7)
+  and in item 5 (the ball played only once the opponents keep their distance); second review
+  no serious finding, of its minor ones the metre off a wall (it binds from a line height of
+  about 0.98, so no club of the league, but item 7's tactics) and the spots' checks fixed
+- [x] Coupling with the decision layer (6 h), done 27 Oct after five verifier rounds and a review.
+  The /ship stop point came after round 3 (20:10 CET): a surviving mutant of the restart's wait (a
+  penalty kicked without waiting for its taker, who was then put 40 m onto the mark), and an
+  advisory `list(set(out))` in `breaches`; both pinned since. Rounds 1 and 2: round 1 FAIL, five
+  surviving mutants (the restart's wait on `breaches` never bit in a real match, and four
+  comparisons exactly on their bound: the kick-off circle, the penalty arc, the v2 speed bound, the
+  keeper's reach), fixed by a restart held by a stubbed breach, points exactly 9.15 m off in floats,
+  the bounds themselves and `_Sim.reaches_save`; round 2 FAIL, v1's 9.5 + 0.05 m/s pinned by no test
+  (at the base neither), fixed from both sides (4.775 m in 0.5 s exactly), with the pause and a
+  penalty's keeper awaited. About 120 other mutants of the key invariants were killed. The owner's
+  decision (27 Oct 20:17 CET): a fourth verifier round, then the review and the commit; CI runs
+  `test_generator_v2.py` whole, all 50 seeds. Round 4 FAIL (20:26 CET): round 3's two mutants
+  killed, but a penalty that waited for the kicking side's own keeper survived (the test left that
+  keeper 30 m off his point too). Fixed: the restart tests start from everyone on his layout point
+  and move one player off (the taker, the keeper facing the penalty, the other keeper, at a penalty
+  and at a throw-in), the pause pinned to the step (7 s: 17 000 ms), the ball's roll to the spot
+  pinned (40 m: 15 000 ms); that pin found the roll a step late by a float residue (0.8 m added 50
+  times), so the ball now rolls by the time elapsed. Every variant of the wait (13: each clause
+  dropped or bent, each `waiting` set, the roll's speed) is killed by the fast tests in a scratch
+  copy. The owner's decision (27 Oct 20:37 CET): a fifth verifier round and the review at once, then
+  the commit. Round 5 FAIL (20:47 CET): a penalty's `breaches` that exempted the kicking side's
+  keeper too, and a throw-in waiting for that keeper, survived; both are pinned now, and so are its
+  advisories (on his point means within a centimetre: 1.5 cm off takes one more step; a period's
+  kick-off at once; the roll and the layout cleared once played; the roll's 8 m/s a literal). The
+  review (20:41 CET): one SERIOUS finding, the lead timed to where the recipient stood, not to where
+  he would be, so a mate running at the passer was judged to get there by running on when he could
+  not, and the ball jumped to him at the arrival (above 50 m/s in the worst case: a crashing seed).
+  Fixed: the ball meets a runner at the earliest step at which it can be where he then is (so it
+  never flies faster than kicked; a standing mate as before), and a candidate nobody can reach gets
+  the ball played as slowly as he needs; a property over any position, velocity and kick (the
+  review's case pinned), the two ways of being there and the shortest flight pinned. MINOR, fixed:
+  `cut_out`'s wait capped short of infinity, a dead ball has no side in possession (`stop`), the
+  ball back at the feet of a carrier who withstands a challenge (each challenge's outcome pinned),
+  the marks afresh after a restart, the challenge test measuring from the carrier found from the
+  events. Every mutant of these fixes tried in scratch copies is killed (17); these fixes were
+  judged by those mutants and the tests of the changed files (733 passed, 2 min 59 s), not by a
+  sixth verifier round. Built: `matchlens.generator_v2. generate_match_v2` beside v1's `generator`,
+  which is untouched (its SHA-256 pins green); v1's possession-chain decisions over 22 `Body`s
+  stepped every 100 ms by `movement.step` under each player's `Limits`, tired by the second; aims
+  from `targets.targets` every third step and at once when the play changes, from `setpieces.layout`
+  at a restart; the ball at its carrier's feet, in flight on a straight line, or resting. Every
+  event lies on a 100 ms step where the bodies are: a pass is led by its recipient's velocity and
+  ends at him (a moving recipient gets there by running on; one standing, or whose lead the band
+  cuts short, is checked by the new `movement.time_to_reach`, the counterpart of `pace_to_arrive`;
+  one who cannot goes to the next by weight); an interception goes to the opponent first on the
+  ball's path beyond its first fifth, a loose ball to the player first on it, taken within 0.75 m
+  and no sooner than 0.5 s after it lands; `defend`'s challenger is an outfield opponent within 1.5
+  m of the ball (odds once per carry), the ball at his feet for the challenge and back at the
+  carrier's on the next step if he keeps it; a save by the keeper's own top speed (v1's
+  `KEEPER_REACH` stays v1's), made where the keeper is. The dead ball: the ball rolls to the spot at
+  8 m/s (taken from the Follow-ups instead of the taker carrying it: after a goal a striker would
+  fetch it from his own net), and the restart waits for v1's pause, its taker (at a penalty the
+  keeper too) on his point and `setpieces.breaches` empty (the Laws' own distances, which `layout`'s
+  points keep by the margin); then the taker, a thrower and a corner's taker on the line itself, and
+  a penalty's keeper on his goal line, are put there. A penalty and a free kick are told apart by
+  `setpieces.in_penalty_area` (public now, v1's formula). A marker keeps his man until another is 3
+  m nearer his slot (`targets.marking`, the marks passed in as `marks` and back as `Aim.mark`).
+  `validate_match(match, top_speeds)` checks each player against his own top speed plus 0.022 m over
+  the snapshot gap (`MOVE_TOLERANCE`: two positions stored to the centimetre, so v1's 0.05 m/s does
+  not hold at 100 ms gaps); v1's call is unchanged. The lineup per slot by role, side if free, else
+  the role's group; v2's decisions read `ROLE_GROUP`. Re-tuned by scratch sweeps (8–16 seeds, then
+  50): the dwell 1.0–4.0 s (v1 0.7–3.0), a challenge's odds 0.30, a pass's weights ideal 20 m, ahead
+  × 6, behind × 0.25 (v1 16, 1.6, 0.6), a shot's odds by distance 0.50, 0.32, 0.10, 0.03 (v1 0.35,
+  0.18, 0.07, 0.03), a failed pass near a touchline out 0.60 (v1 0.35). Found while tuning:
+  `time_to_reach` stops a player on the point, so it judged 45 % of the moving first picks
+  unreachable (seed 0: 290 of 651) and the passes went backwards, −5.3 m on average (v1 −1.1); with
+  v1's constants and that fixed, 6.5 shots and 0.6 goals a match, because play stayed 35–70 m from
+  goal. Calibration over seeds 0–49, after the review's fixes: passes 1198 [850–1350], accuracy 0.86
+  [0.78–0.90], shots 24.2 [15–32], goals 2.50 [1.5–4.0] (at most 7), fouls 24.9 [12–40], throw-ins
+  27.8 [15–50], corners 3.52 [2–12]. Cost: 8.8 s a match alone, 9.4 s on 6 processes (seeds 0–49),
+  beyond the plan's 5 s ±50 %; 40 MB at most. Real run: `m3` (qrd 2–2 slt), 1827 events, 491 KiB of
+  JSON, 295 facts, the frame pass 3.6 s, top speeds 8.34, 8.00 and 7.61 m/s, the median of all 22
+  players 10.4 km (tracking interpolated between the events' snapshots until item 6). Tests: 45 in
+  `test_generator_v2.py` (the first 38 took 2 min 44 s, of it 2 min 1 s for the 50 matches on 4
+  processes): every match validates with each player's own top speed; any seed and clubs
+  (Hypothesis); the same seed gives the same match, across processes and hash seeds; the
+  calibration; every event and snapshot on the 100 ms grid; a challenge from within 1.5 m of the
+  carrier; a loose ball taken where it lies (0.75 m) no sooner than 0.5 s; at every restart the Laws
+  checked on their own in its snapshot (all six kinds occur) and the taker on the spot; the lineup
+  by role and side, a group's substitute, no group or no keeper refused; on a match set up by hand,
+  each boundary from both sides: a challenge at 1.5 and 1.51 m and never by a keeper, a resting ball
+  at 0.75 and 0.76 m, a save at the keeper's top speed less 1 mm and a goal at 1 cm more; flights on
+  the grid. `breaches` from both sides per kind in literals (29 cases) and empty at every layout
+  (all pairs and kinds, the free-kick property); `marking` at 3 m and at the radius from both sides,
+  `marks` in targets' Hypothesis properties; `time_to_reach` a property against `pace_to_arrive`,
+  pinned at 3.1 and 3.2 s; `validate_match` at 4.021 and 4.023 m. How CI runs `test_generator_v2.py`
+  (2 min 44 s here, 8 min of CPU) is the owner's call: whole, all 50 seeds (27 Oct 20:17 CET). Into
+  Follow-ups: the challenge's poke, the save without a dive, the placements on a line against item
+  7's acceleration limit, a receiver meeting the ball on the move, the cost against item 6's budget
+- [x] Storage and speed (3 h), done 27 Oct. Generator v2 keeps every 100 ms step as a frame of
+  `match.Tracking`: per period the bytes of an `array('h')` in whole centimetres (not `'f'`: exact
+  to the centimetre at half the size), the ball's x and y, then each player's, 5.3 MB a match; a
+  v2 `Match` has no snapshots. `frames()`, `frame_at()` and the frame ids are unchanged and read
+  them (the frames are now the simulated steps, no longer interpolated between events); `pass_ratings`
+  reads the arrivals through `Match.snapshots_at`; `validate_match` judges a tracking frame by
+  frame: each step within the player's own top speed plus 0.022 m, the ball within 50.05 m/s,
+  everyone on the pitch, the lineups, whole frames, every event where its frame has it. An
+  instant's last snapshot is its frame (a challenge's ball at the challenger's feet), and an
+  event's points are rounded as the frames are (`round(x * 100)`: 0–2 points a match moved by 1 cm
+  against `round(x, 2)` at half centimetres). Speed without changing a match (12 v2 matches, seeds
+  0–9 and two with chosen clubs, identical but for that rounding; the frames at the old snapshots'
+  instants within 1 cm): `step`'s clamps written out, `stopping_speed` skipped beyond
+  `braking_bound` (4 calls in 5; a property against `step` with the shortcut off), `Body` a named
+  tuple, the fatigue worked out only in its window, `targets._unit` cached, the opponents' frame
+  once a call; v1's frames by a cached `team_of` and a fast path for floats on the pitch (v1's
+  hashed match unchanged). Budgets (Metrics: Generation + frame pass, Server memory): v2 7.95–8.38
+  s against 10.3 s, v1 2.10–2.20 s; the server with three v2 matches 136 MiB. Real run: `match_facts`
+  of v2 m1 297 facts in 1.80 s (v1 2.42 s), `facts_at` 23 ms; v2 m3 (qrd 2–2 slt) from its frames:
+  top speeds 9.10, 8.93 and 8.82 m/s, the median of all 22 players 11.45 km (interpolated: 8.34,
+  8.00, 7.61 and 10.4). Tests: `test_tracking.py` (43: reading back, `holds` off the grid and past
+  the last frame, each limit from both sides in literals, 80 cm exactly on 7.78 m/s's bound, askew
+  steps either side of the tolerances, the pitch's edges, the structure; a property over any
+  tracking), the frame per step and the instant's last snapshot in `test_generator_v2.py`, the
+  fatigue clamp at 8 seconds, `braking_bound` (a property, the grid's tight case), the kept tracking
+  in `test_facts.py`'s frame property, an event's point rounded exactly as its frame (30.065 m to
+  30.06), the league's slowest taker put on his line within his speed. Own mutant sweep: 30 of 32
+  killed, the two survivors killed by new tests; the verifier (one round, 15 min, stopped at its
+  budget): 3 survivors of the rounding (inside the validator's 1.1 cm) and 3 advisory ones killed
+  by new tests, each in a scratch copy with the fixes' mutants; the review: nothing serious, the
+  first too-fast step named instead of the longest, `_unit`'s cache typed; the rest in
+  Follow-ups
+- [ ] Validation and realism tests (5 h), deferred until after the judging (owner, 27 Oct): `validate_match` adds each player's acceleration limit
+  next to his speed limit (item 5); `tests/test_realism.py` asserts every gate of item 1 over seeds 0–19, each
+  band pinned from both sides by a case just inside and just outside it; the measurement of the
+  Metrics row becomes a script in `scripts/`, so the table regenerates; Hypothesis properties
+  for the movement layer (any targets, any start: never above the top speed or the acceleration
+  limit, never off the pitch, no overshoot at arrival) and for every new stats computation
+- [x] Downstream (4 h, plus billed runs), done 28 Oct: the stats engine's interface stays, but every match
+  changes: new event ids, facts and readings. The logged runs in `demo/runs/` stop fitting (the
+  server judges each logged text again, so they would be refused, not shown wrong): new Sonnet
+  5.5 runs for seeds 0, 1 and 3 with the Analyst over MCP, the Persona Editor, the Recap Writer
+  and the Translator. Stop point: the call budget and its cost estimate before the first call
+  (Metrics: Cost, October to 25 Oct). Prepared 27 Oct (no call made): the logged runs in
+  `demo/runs/` cost $1.853 at list price for 153 requests (m0 $0.775, m1 $0.476, m3 $0.602,
+  from their `summary.json`, `recap.json` and `translate.sk.json`): $0.044 a moment for the
+  Analyst and the fan rendition, $0.024 a match's recap pair, $0.017 a translated pair. v2's
+  matches of seeds 0, 1 and 3 have 13, 11 and 11 moments (v1 12, 7 and 9, as logged: the
+  detector run without calls), so an estimate of $2.3 ±30 % (35 moments $1.55, recaps $0.07, 38
+  translated pairs $0.66) and about 190 requests; to be measured again once items 6–7 settle
+  the matches. Re-measure the Metrics rows that depend on the matches and
+  the README's Measured results; decide whether the top speed returns to the full-time card
+  (issue #7) once top speeds are realistic
+  Done: the owner's OK to the budget 28 Oct ~00:15 CET (35 moments, $2.26 ±30 %, `--max-calls` 40 a
+  match; m0 got 46, as v1's rule of 3.5 a moment gives: a moment over MCP is 3 requests, not 2).
+  The CLI makes v2's matches (`generate_match_v2` at its 7 calls; v1 stays in the code). Runs: Metrics,
+  Demo runs, generator v2: 191 requests, $2.399, 61 min, every text shown, 3 refusals each fixed at
+  the second attempt. `demo/runs/` holds them; v1's runs moved to `demo/runs-v1/` (owner's choice A,
+  28 Oct: the video is recorded again). Tests: `tests/real.py` keeps v1's matches for the 18 modules
+  that pin them, `cli_on_v1` gives them to the CLI in the 4 modules that replay v1 runs through it,
+  `match_v2` serves the demo-run tests of `test_container.py`; `test_cli.py` runs the CLI on v2 (three
+  of m7's moments by 12:00). README: the tracking paragraph, the refusals, Measured results with v1's
+  row kept; `docs/submission.md`: the project page's numbers and the video's refusal shot (m0's Slovak
+  translation of m0-k00272). Cut with item 7: the other Metrics rows and issue #7. The cold start
+  at 0.25 vCPU doubled with v2's three matches (420.1 s, Metrics: Container, generator v2), past
+  container.sh's 240 s and a third of the startup probe's 721 s: the owner's choice 1 of 3, 28 Oct
+  ~02:00 CET ("1, and if that is not enough, 2 as well" (translated from Slovak)): the startup
+  probe every 6 s (1 + 240 x 6 = 1441 s, three times the start), readiness 48 x 10 s (96 x 5 s was
+  refused by ACA at the first deploy, 28 Oct ~02:40 CET: a threshold of 1-48), container.sh
+  480 s; choice 2, 0.5 vCPU with 1 GiB (billed), approved if 1 is not enough on ACA
+- [ ] Deploy (owner, from 11 Nov 08:59 CET): `scripts/deploy.sh`, Metrics: Deploy; the public
+  repository by a new commit there
+Out of scope: new event types (offside, cards, substitutions, dribbles), a ball in 3D, an
+expected-value decision model, a learned model, real data in the repository.

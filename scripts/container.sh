@@ -17,7 +17,8 @@ memory="${MEMORY:-512m}"
 base="http://127.0.0.1:$port"
 name="matchlens-smoke-$$"
 matches=(m0 m1 m3)
-ready_limit_s=240 # every match streams within the readiness window planned for ACA (M6 item 3)
+ready_limit_s=480 # every match streams within the readiness window planned for ACA (M6 item 3;
+                  # 240 s until generator v2's 420.1 s cold start, owner 28 Oct)
 graceful_s=20     # GRACEFUL_TIMEOUT_S: what an open stream gets after SIGTERM
 stop_limit_s=30   # ACA sends SIGKILL 30 s after SIGTERM
 early_stop_s=5    # before the server is ready there is nothing to close (locally under 0.3 s)

@@ -8,7 +8,7 @@ from strategies import CLUBS
 
 from matchlens.events import EventType, Outcome, Point, Restart, make_event_id
 from matchlens.generator import generate_match
-from matchlens.match import Match, Snapshot, validate_match
+from matchlens.match import MOVE_TOLERANCE, Match, Snapshot, validate_match
 
 NEEDED = {
     "type": [EventType.GOAL, EventType.SAVE, EventType.TACKLE],
@@ -382,3 +382,75 @@ def test_match_score_and_frames_on_a_tiny_hand_built_match():
         (2, 0, 52.5),
         (2, 100, 52.5),
     ]
+
+
+# --- a v2 match: every player keeps his own top speed (M9 item 5) ------------------------------
+
+
+def _one_run(moved, gap_ms=500):
+    """A match of nothing but two period ends, where cor-p01 runs `moved` metres from x = 0 in
+    `gap_ms`."""
+    from matchlens.events import Event, MatchMeta
+
+    lineup = {t: tuple(f"{t}-p{i:02d}" for i in range(1, 12)) for t in ("cor", "vel")}
+    meta = MatchMeta("m1", "cor", "vel", lineup["cor"], lineup["vel"], 1)
+    still = tuple((p, 10.0, 4.0 + 3.0 * i) for i, p in enumerate(lineup["cor"] + lineup["vel"]))
+    still = (("cor-p01", 0.0, 4.0), *still[1:])
+    ran = (("cor-p01", moved, 4.0), *still[1:])
+    snaps = (
+        Snapshot(1, 0, (52.5, 34.0), still),
+        Snapshot(1, gap_ms, (52.5, 34.0), ran),
+        Snapshot(2, 0, (52.5, 34.0), still),
+        Snapshot(2, 100, (52.5, 34.0), still),
+    )
+    events = (
+        Event("m1-e00000", 1, gap_ms, EventType.PERIOD_END),
+        Event("m1-e00001", 2, 100, EventType.PERIOD_END),
+    )
+    return Match(meta, events, snaps), {p for p, _, _ in still}
+
+
+@pytest.mark.parametrize(
+    ("moved", "ok"),
+    [(4.0, True), (8.0 * 0.5 + MOVE_TOLERANCE, True), (4.021, True), (4.023, False)],
+)
+def test_a_player_keeps_his_own_top_speed_to_the_centimetres_rounding(moved, ok):
+    # 8 m/s for 0.5 s is 4 m, plus 0.022 m for his two positions stored to the centimetre: the
+    # bound itself (exactly, in floats) is kept
+    m, everyone = _one_run(moved)
+    speeds = dict.fromkeys(everyone, 8.0)
+    if ok:
+        validate_match(m, speeds)
+    else:
+        with pytest.raises(ValueError, match=re.escape("cor-p01 moved faster than his 8.0 m/s")):
+            validate_match(m, speeds)
+    assert MOVE_TOLERANCE == 0.022
+
+
+def test_a_v2_sprinter_is_judged_by_his_own_top_speed_not_v1s_limit():
+    # 9.6 m/s for 0.5 s: beyond v1's 9.5 (and its 0.05 tolerance), within a 9.73 m/s winger's
+    m, everyone = _one_run(4.8)
+    with pytest.raises(ValueError, match=re.escape("cor-p01 moved faster than 9.5 m/s")):
+        validate_match(m)
+    validate_match(m, dict.fromkeys(everyone, 9.73))
+
+
+def test_a_v2_match_needs_every_players_top_speed():
+    m, everyone = _one_run(1.0)
+    speeds = dict.fromkeys(everyone - {"vel-p05", "cor-p11"}, 8.0)
+    with pytest.raises(ValueError, match=re.escape("m1: no top speed for cor-p11, vel-p05")):
+        validate_match(m, speeds)
+
+
+@pytest.mark.parametrize(
+    ("moved", "ok"), [(4.75, True), (4.774, True), (4.775, True), (4.776, False)]
+)
+def test_v1s_limit_is_9_5_m_s_plus_its_tolerance(moved, ok):
+    # without top speeds every player keeps 9.5 m/s plus 0.05 m/s: 4.775 m in 0.5 s exactly
+    # (9.55 m/s in floats, as 9.5 + 0.05), a millimetre more is refused
+    m, _ = _one_run(moved)
+    if ok:
+        validate_match(m)
+    else:
+        with pytest.raises(ValueError, match=re.escape("cor-p01 moved faster than 9.5 m/s")):
+            validate_match(m)

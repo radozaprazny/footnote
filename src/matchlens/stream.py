@@ -252,6 +252,8 @@ def live_timeline(
 
 def tracking_ends(match: Match) -> dict[int, int]:
     """The last tracking clock of each period."""
+    if match.tracking is not None:
+        return match.tracking.ends()
     ends: dict[int, int] = {}
     for s in match.snapshots:
         ends[s.period] = max(ends.get(s.period, 0), s.clock_ms)

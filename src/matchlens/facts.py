@@ -18,9 +18,9 @@ from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from decimal import ROUND_HALF_UP, Decimal
 
-from matchlens.events import EventType, display_clock
+from matchlens.events import Event, EventType, Outcome, display_clock
 from matchlens.league import load_league
-from matchlens.match import Match
+from matchlens.match import Match, Snapshot
 from matchlens.stats.flow import control, momentum, pressing
 from matchlens.stats.passing import PassRating, pass_ratings, pass_stats
 from matchlens.stats.possession import Spell, possession, spells
@@ -86,7 +86,7 @@ def match_facts(match: Match) -> list[Fact]:
     facts.score(events, whole, "match")
     facts.goal_readings(events)
     all_spells = spells(events)
-    ratings = pass_ratings(meta, events, match.snapshots)
+    ratings = pass_ratings(meta, events, _arrivals(match, events))
     facts.possession(all_spells, "match")
     facts.passing(ratings, "match", whole, team=meta.home)
     facts.passing(ratings, "match", whole, team=meta.away)
@@ -193,7 +193,7 @@ def facts_at(match: Match, period: int, clock_ms: int) -> list[Fact]:
         for e in events
         if e.type is not EventType.PASS or (e.period, e.clock_ms + e.duration_ms) <= now
     ]
-    ratings = pass_ratings(meta, arrived, match.snapshots)
+    ratings = pass_ratings(meta, arrived, _arrivals(match, arrived))
     for team in (meta.home, meta.away):
         facts.passing(ratings, f"to-{stamp}", so_far, team=team, brief=True)
     facts.shirt_numbers()
@@ -222,6 +222,16 @@ def _percent(part: int, whole: int) -> str:
 
 def _end(match: Match, period: int) -> int:
     return max(e.clock_ms for e in match.events if e.period == period)
+
+
+def _arrivals(match: Match, events: Sequence[Event]) -> tuple[Snapshot, ...]:
+    """The tracking at the instants the complete passes among `events` arrive: what
+    `pass_ratings` reads."""
+    return match.snapshots_at(
+        (e.period, e.clock_ms + e.duration_ms)
+        for e in events
+        if e.type is EventType.PASS and e.outcome is Outcome.COMPLETE
+    )
 
 
 def _spells_span(counted: Sequence[Spell]) -> Span:

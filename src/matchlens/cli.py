@@ -37,7 +37,7 @@ from pathlib import Path
 
 from matchlens.events import display_clock
 from matchlens.explain.state import DEFAULT_MAX_CALLS, Lang, Persona
-from matchlens.generator import generate_match
+from matchlens.generator_v2 import generate_match_v2
 from matchlens.league import load_league
 from matchlens.match import Match
 
@@ -281,7 +281,7 @@ def _generate(args: argparse.Namespace) -> int:
             args.error(f"unknown {side} club {club!r}; choose from {', '.join(clubs)}")
     if args.home is not None and args.home == args.away:
         args.error(f"home and away are both {args.home}")
-    match = generate_match(args.seed, home=args.home, away=args.away)
+    match = generate_match_v2(args.seed, home=args.home, away=args.away)
     text = json.dumps(match_document(match), separators=(",", ":")) + "\n"
     if not _write(args.out, text, "generate"):
         return 1
@@ -401,7 +401,7 @@ def _translations_line(mid: str, logged: Sequence, cues: Sequence, recap) -> Non
 
 
 def _cues(args: argparse.Namespace) -> int:
-    match = generate_match(args.seed)
+    match = generate_match_v2(args.seed)
     runs = _runs(args, [args.run_dir] if args.run_dir else [])
     if others := sorted(runs.keys() - {match.meta.match_id}):
         args.error(f"the run is of {', '.join(others)}, not {match.meta.match_id}")
@@ -478,7 +478,7 @@ def _serve(args: argparse.Namespace) -> int:
 
         seeds = _seeds(args)
         runs = _runs(args, args.runs or [])
-        matches = [generate_match(s) for s in seeds]
+        matches = [generate_match_v2(s) for s in seeds]
         if others := sorted(runs.keys() - {m.meta.match_id for m in matches}):
             args.error(f"runs of matches not served: {', '.join(others)}")
         overlays = {
@@ -505,7 +505,7 @@ def _mcp(args: argparse.Namespace) -> int:
         args.error("--host and --port need --http")
     host = "127.0.0.1" if args.host is None else args.host
     port = 8001 if args.port is None else args.port
-    server = create_server((generate_match(s) for s in seeds), host=host, port=port)
+    server = create_server((generate_match_v2(s) for s in seeds), host=host, port=port)
     where = f"http://{host}:{port}/mcp" if args.http else "stdio"
     # stdout carries the protocol over stdio, so the banner goes to stderr
     print(f"facts of {', '.join(f'm{s}' for s in seeds)} over MCP on {where}", file=sys.stderr)
@@ -531,7 +531,7 @@ def _explain(args: argparse.Namespace) -> int:
         client = FakeChatClient(echo) if args.fake else foundry_client(args.deployment)
     except RuntimeError as e:
         args.error(str(e))
-    match = generate_match(args.match)
+    match = generate_match_v2(args.match)
     now = datetime.now(UTC)
     run_id = f"{now:%Y%m%dT%H%M%S}{now.microsecond // 1000:03d}Z"  # UTC, to the millisecond
     run_dir = args.runs / match.meta.match_id / run_id
@@ -618,7 +618,7 @@ def _recap(args: argparse.Namespace) -> int:
         if not args.fake:  # a billed run names its cap
             args.error("a recap that calls a model needs --max-calls")
         args.max_calls = DEFAULT_MAX_CALLS
-    match = generate_match(args.match)
+    match = generate_match_v2(args.match)
     mid = match.meta.match_id
     try:
         handoffs = read_handoffs(args.run_dir / "handoffs.jsonl")
@@ -697,7 +697,7 @@ def _translate(args: argparse.Namespace) -> int:
         if not args.fake:  # a billed run names its cap
             args.error("a translation that calls a model needs --max-calls")
         args.max_calls = DEFAULT_MAX_CALLS
-    match = generate_match(args.match)
+    match = generate_match_v2(args.match)
     mid = match.meta.match_id
     log_name, summary_name = translation_files(args.lang)
     try:

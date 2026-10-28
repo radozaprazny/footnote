@@ -23,6 +23,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, fields
 from enum import StrEnum
+from functools import lru_cache
 from typing import Any, Self
 
 PITCH_LENGTH = 105.0
@@ -170,7 +171,14 @@ def frame_time(frame_id: str) -> tuple[str, int, int]:
 
 def team_of(player_id: str) -> str:
     """Club id of a player id (`cor-p07` -> `cor`)."""
-    m = _PLAYER_ID.fullmatch(player_id) if isinstance(player_id, str) else None
+    if not isinstance(player_id, str):
+        raise ValueError(f"{player_id!r} is not a player id like cor-p07")
+    return _club_of(player_id)
+
+
+@lru_cache(maxsize=1024)  # every tracking frame asks for its 22 players twice
+def _club_of(player_id: str) -> str:
+    m = _PLAYER_ID.fullmatch(player_id)
     if m is None:
         raise ValueError(f"{player_id!r} is not a player id like cor-p07")
     return m[1]
@@ -340,8 +348,10 @@ class TrackingFrame:
             raise ValueError(f"{what}: players must be PlayerPosition objects")
         if len(players) != 2 * PLAYERS_PER_TEAM:
             raise ValueError(f"{what}: {len(players)} players, expected {2 * PLAYERS_PER_TEAM}")
-        _require_unique(f"{what}: duplicate player", [p.player for p in players])
-        per_team = Counter(team_of(p.player) for p in players)
+        names = [p.player for p in players]
+        if len(set(names)) != len(names):
+            _require_unique(f"{what}: duplicate player", names)
+        per_team = Counter(team_of(name) for name in names)
         if len(per_team) != 2:
             raise ValueError(f"{what}: {len(per_team)} teams on the pitch, expected 2")
         for team, n in sorted(per_team.items()):
@@ -433,6 +443,9 @@ def _check_int(value: Any, low: int, high: int, what: str) -> None:
 
 def _init_coordinates(obj: Any, what: str = "") -> None:
     """Check `obj.x` / `obj.y` are on the pitch and store them as floats."""
+    x, y = obj.x, obj.y
+    if type(x) is float and type(y) is float and 0 <= x <= PITCH_LENGTH and 0 <= y <= PITCH_WIDTH:
+        return  # floats on the pitch already, as in every tracking frame: nothing to store
     where = f"{what}: " if what else ""
     for axis, limit in (("x", PITCH_LENGTH), ("y", PITCH_WIDTH)):
         value = getattr(obj, axis)

@@ -12,6 +12,7 @@ import pytest
 import real
 from hypothesis import given, settings
 from hypothesis import strategies as st
+from real import cli_on_v1  # noqa: F401 (autouse: the CLI replays on v1)
 from test_explain_workflow import KINDS, kind_of, reply
 
 from matchlens import cli

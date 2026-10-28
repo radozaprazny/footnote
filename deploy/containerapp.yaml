@@ -25,13 +25,14 @@ properties:
           # the cold start (match generation and the runs' replay check) ends with the bind;
           # since M5 the replay check computes every match's overlay, the whole warm-up, so the
           # bind comes after 211.8 s at 0.25 vCPU on the devbox (25 Oct; 14.5-29.9 s before, 4 s
-          # on ACA then); 1 + 240 x 3 s, ACA's own default threshold for a startup probe
+          # on ACA then), and after 420.1 s with generator v2's three matches (28 Oct, M9 item
+          # 8); 1 + 240 x 6 s, ACA's own default threshold for a startup probe, three times that
           - type: Startup
             httpGet:
               path: /healthz
               port: 8000
             initialDelaySeconds: 1
-            periodSeconds: 3
+            periodSeconds: 6
             timeoutSeconds: 3
             failureThreshold: 240
           - type: Liveness
@@ -44,12 +45,13 @@ properties:
           # traffic only once every cue timeline is computed: since M5 the replay check computes
           # them all before the bind, so /readyz is 200 at the first probe; it would gate a match
           # served without a run (190-211 s at 0.25 vCPU on the devbox on 23 Oct, 30 s on ACA),
-          # inside 48 x 5 s after the startup probe (ACA's default readiness window)
+          # inside 48 x 10 s after the startup probe (twice ACA's default readiness window, for
+          # generator v2's start: owner, 28 Oct; ACA takes a threshold of 1-48 here)
           - type: Readiness
             httpGet:
               path: /readyz
               port: 8000
-            periodSeconds: 5
+            periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 48
             successThreshold: 1

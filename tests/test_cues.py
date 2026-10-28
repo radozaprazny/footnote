@@ -633,16 +633,17 @@ def test_cues_command_writes_the_timeline(capsys, tmp_path):
     assert main(["cues", "--seed", "7", "--out", str(path)]) == 0
     out, err = capsys.readouterr()
     doc = json.loads(path.read_text(encoding="utf-8"))
-    assert out == "" and doc == {"match_id": "m7", "cues": [c.to_dict() for c in real.timeline(7)]}
-    assert err == "m7: 51 cues (chance 10, goal 5, moment 15, period_end 2, recap 1, window 18)\n"
+    cues = [c.to_dict() for c in real.timeline_v2(7)]
+    assert out == "" and doc == {"match_id": "m7", "cues": cues}
+    assert err == "m7: 61 cues (chance 15, goal 5, moment 20, period_end 2, recap 1, window 18)\n"
 
 
 def test_cues_command_writes_json_to_stdout_and_the_summary_to_stderr(capsys):
     assert main(["cues", "--seed", "7"]) == 0
     out, err = capsys.readouterr()
     assert out.endswith("\n") and out.count("\n") == 1
-    assert json.loads(out)["cues"] == [c.to_dict() for c in real.timeline(7)]
-    assert err.startswith("m7: 51 cues ")
+    assert json.loads(out)["cues"] == [c.to_dict() for c in real.timeline_v2(7)]
+    assert err.startswith("m7: 61 cues ")
 
 
 def test_cues_command_reports_an_unwritable_file(capsys, tmp_path):

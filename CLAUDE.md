@@ -13,7 +13,10 @@ Status, backlog and metrics: `PROGRESS.md`.
 ## Commands
 - Tests: `uv run pytest -q`
 - Lint and format: `uv run ruff check . && uv run ruff format .`
-- Local CI (the independent judge, also run by the git pre-commit hook): `scripts/ci.sh`
+- Local CI (the independent judge): `scripts/ci.sh`, the whole suite, run by GitHub CI and before
+  a merge into main or a deploy. The git pre-commit hook runs `scripts/ci.sh --changed`: the lint
+  and the tests of the staged files, imports between the modules in `src/` followed (owner
+  decision, 27 Oct)
 - One-time setup after a clone (owner runs it; the guard blocks it for Claude):
   `git config core.hooksPath .githooks`
 - Browser for the end-to-end tests and the scripts, once after a clone (the pre-commit hook needs
@@ -24,7 +27,8 @@ Status, backlog and metrics: `PROGRESS.md`.
   `scripts/deploy.sh`
 
 ## Done means
-- `scripts/ci.sh` is green
+- the pre-commit hook is green (the tests of the change); the whole `scripts/ci.sh` before a
+  merge into main or a deploy
 - new logic has its own test; every stats-engine computation has at least one Hypothesis property
 - the changed part was run for real once (CLI, endpoint, stream)
 
@@ -49,8 +53,12 @@ Status, backlog and metrics: `PROGRESS.md`.
 - In a `&&` chain never pipe a command whose failure must stop the chain: `| tail` hides its
   exit code (a failed merge once let the next command remove its worktree).
 - Pin every threshold and boundary from both sides (exactly on it and one unit off), and add every
-  field a fix introduces to an existing Hypothesis property in the same change; random values and
-  an example at period 1, clock 0 pin nothing.
+  field or optional parameter a change introduces to an existing Hypothesis property in the same
+  change; random values and an example at period 1, clock 0 pin nothing.
+- A test that takes a boundary from the module's own constant (`CIRCLE + MARGIN`) moves with it and
+  pins nothing: write the rule's number once as a literal (9.15).
+- For a float bound, put one input exactly on it (search for it, and assert the equality in the
+  test): a millimetre on each side leaves `<` against `<=` alive.
 - Create an item worktree with a path from the main tree (`git -C <main tree> worktree add
   .claude/worktrees/<name>`): a relative path run inside a milestone worktree nests the new tree
   in it, and moving it later breaks its venv's script paths.
@@ -99,3 +107,6 @@ Status, backlog and metrics: `PROGRESS.md`.
   checks (a known digest, each check reading its own list): else an emptied check still passes.
 - `git rm --cached` deletes the file from every tree that later merges or checks out the commit,
   so a "local copy" needs a restore command, and a test that reads it a fallback.
+- While the pre-commit CI runs, run nothing heavy beside it: timing tests flake under CPU load.
+- Before a verifier round, sweep the key invariants' mutants yourself in a scratch copy with the
+  fast tests: five rounds each found the next gap, one at a time.

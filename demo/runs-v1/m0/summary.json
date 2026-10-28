@@ -1,0 +1,58 @@
+{
+ "run_id": "20261023T185842002Z",
+ "match_id": "m0",
+ "models": [
+  "claude-sonnet-5-5"
+ ],
+ "moments": 12,
+ "narratives": 12,
+ "stats_only": 0,
+ "crashed": [],
+ "first_attempt_passed": 12,
+ "attempts": 12,
+ "model_calls": 12,
+ "model_requests": 24,
+ "skipped": 0,
+ "errors": {},
+ "reasons": {},
+ "tokens_in": 180628,
+ "tokens_out": 4758,
+ "cost_usd": 0.408836,
+ "latency_ms_p50": 5094,
+ "latency_ms_p95": 5681,
+ "stopped": null,
+ "personas": {
+  "fan": {
+   "renditions": 12,
+   "passed": 12,
+   "fallback": 0,
+   "open": 0,
+   "first_attempt_passed": 12,
+   "attempts": 12,
+   "model_calls": 12,
+   "model_requests": 12,
+   "skipped": 0,
+   "errors": {},
+   "reasons": {},
+   "tokens_in": 46748,
+   "tokens_out": 2913,
+   "cost_usd": 0.122626,
+   "latency_ms_p50": 2587,
+   "latency_ms_p95": 4561
+  }
+ },
+ "total_requests": 36,
+ "total_tokens_in": 227376,
+ "total_tokens_out": 7671,
+ "total_cost_usd": 0.531462,
+ "first_attempt_pass_rate": 1.0,
+ "final_pass_rate": 1.0,
+ "settings": {
+  "max_calls": 42,
+  "pace_s": 35,
+  "mcp": "http://127.0.0.1:8001/mcp",
+  "personas": [
+   "fan"
+  ]
+ }
+}

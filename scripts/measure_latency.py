@@ -20,7 +20,7 @@ from playwright.sync_api import sync_playwright
 from serving import serve  # scripts/serving.py, next to this file
 
 from matchlens.facts import match_facts
-from matchlens.generator import generate_match
+from matchlens.generator_v2 import generate_match_v2
 from matchlens.latency import summarize
 from matchlens.render.moments import match_cues
 
@@ -36,7 +36,7 @@ def main() -> None:
 
     matches, cues, compute_s = [], {}, {}
     for seed in args.seeds:
-        match = generate_match(seed)
+        match = generate_match_v2(seed)
         started = time.perf_counter()
         cues[match.meta.match_id] = match_cues(match, (), match_facts(match))
         compute_s[match.meta.match_id] = round(time.perf_counter() - started, 2)

@@ -432,17 +432,24 @@ def test_the_pace_counts_from_the_previous_attempt_s_start(took, waits):
 
 
 def test_without_a_pace_attempts_follow_at_once_and_skipped_ones_never_wait():
-    starts = []
+    """On the pace's own clock, not the wall's (wall time flaked under CPU load, 27 Oct): without
+    a pace no attempt waits; with one, a run whose other attempts are skipped waits for none."""
+    now, slept = [100.0], []
 
-    def timed(prompt):
-        starts.append(time.monotonic())
-        return echo(prompt)
+    async def sleep(seconds):
+        slept.append(seconds)
+        now[0] += max(0.0, seconds)
 
-    run_workflow(FakeChatClient(timed))
-    assert max(b - a for a, b in itertools.pairwise(starts)) < 0.3
-    started = time.monotonic()
-    explained, _ = run_workflow(FakeChatClient(echo), max_calls=1, pace_s=5.0)
-    assert time.monotonic() - started < 5.0  # one call, two skipped: nothing to wait for
+    with (
+        mock.patch.object(workflow, "_clock", lambda: now[0]),
+        mock.patch.object(workflow, "_sleep", sleep),
+    ):
+        run_workflow(FakeChatClient(echo))
+        assert slept and all(s <= 0.0 for s in slept)  # the pace was asked, and waited nothing
+        slept.clear()
+        explained, _ = run_workflow(FakeChatClient(echo), max_calls=1, pace_s=5.0)
+    assert all(s <= 0.0 for s in slept)  # one call, two skipped: nothing to wait for
+    assert now[0] == 100.0
     assert [e.case.attempts[0].called_model for e in explained] == [True, False, False]
 
 

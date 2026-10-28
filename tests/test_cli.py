@@ -1,6 +1,7 @@
 import argparse
 import dataclasses
 import functools
+import inspect
 import json
 import os
 import signal
@@ -28,10 +29,10 @@ from matchlens.explain import summary as summary_module
 from matchlens.explain.fake import FakeChatClient
 from matchlens.explain.log import read_handoffs
 from matchlens.explain.summary import chains
-from matchlens.generator import generate_match
+from matchlens.generator_v2 import generate_match_v2
 from matchlens.mcp import create_server
 
-cached_match = functools.cache(generate_match)
+cached_match = functools.cache(generate_match_v2)
 
 
 @pytest.fixture(scope="module")
@@ -42,13 +43,21 @@ def match7():
 @pytest.fixture
 def fast(monkeypatch):
     """Matches come from a cache: the serve tests check wiring, not the generator."""
-    monkeypatch.setattr("matchlens.cli.generate_match", cached_match)
+    monkeypatch.setattr("matchlens.cli.generate_match_v2", cached_match)
 
 
 def run_generate(capsys, *args):
     code = cli.main(["generate", *args])
     out = capsys.readouterr()
     return code, out.out, out.err
+
+
+def test_every_match_the_cli_makes_is_generator_v2_s():
+    """M9 item 8: the CLI's seven calls make v2's matches, and v1 is not imported here. Most CLI
+    tests patch the generator (`fast`, `real.cli_on_v1`), so this pins the source itself."""
+    source = inspect.getsource(cli)
+    assert "matchlens.generator import" not in source
+    assert source.count("generate_match_v2(") == 7
 
 
 def test_generate_writes_the_match_as_json(capsys, match7):
@@ -177,7 +186,7 @@ def test_serve_runs_uvicorn_with_the_seeded_matches(fast, monkeypatch, capsys):
     # the public app's limits (issue #2): the whole match at once is refused, the page's most not
     assert TestClient(app).get("/matches/m7/live?speed=0").status_code == 422
     assert TestClient(app).get("/matches/m7/live?speed=60.2&hz=5").status_code == 422
-    last = generate_match(7).events[-1].event_id  # the page's most is served: a short resume
+    last = cached_match(7).events[-1].event_id  # the page's most is served: a short resume
     assert (
         TestClient(app).get(f"/matches/m7/live?speed=60&hz=5&last_event_id={last}").status_code
         == 200
@@ -250,6 +259,9 @@ def test_mcp_over_streamable_http(fast, monkeypatch, capsys):
 
 # explain
 
+# three of v2's m7 moments end by 12:00 (01:27, 04:07, 11:12; the fourth at 14:56)
+UNTIL = "12:00"
+
 
 def explain_run(capsys, tmp_path, *args):
     code = cli.main(["explain", "m7", "--runs", str(tmp_path), *args])
@@ -259,10 +271,10 @@ def explain_run(capsys, tmp_path, *args):
 
 
 def test_explain_with_the_fake_analyst_writes_the_log_and_the_summary(fast, capsys, tmp_path):
-    code, out, err, run_dir = explain_run(capsys, tmp_path, "--fake", "--until", "28:20")
+    code, out, err, run_dir = explain_run(capsys, tmp_path, "--fake", "--until", UNTIL)
     assert code == 0
     lines = out.splitlines()
-    assert lines[0] == "m7-k00072 04:18 narrative (1): The score is 0–1."
+    assert lines[0] == "m7-k00026 01:27 narrative (1): The score is 0–0."
     s = json.loads((run_dir / "summary.json").read_text())
     assert len(lines) == 4 and lines[-1] == (
         "3 moments: 3 narratives, 0 stats-only, 0 crashed; pass rate 100% first attempt, 100% "
@@ -283,13 +295,13 @@ def test_explain_with_the_fake_analyst_writes_the_log_and_the_summary(fast, caps
 
 
 def test_explain_with_a_persona_prints_each_rendition_and_its_summary(fast, capsys, tmp_path):
-    args = ("--fake", "--until", "28:20", "--persona", "fan", "--persona", "fan")
+    args = ("--fake", "--until", UNTIL, "--persona", "fan", "--persona", "fan")
     code, out, _, run_dir = explain_run(capsys, tmp_path, *args)
     assert code == 0
     lines = out.splitlines()
     assert lines[:2] == [
-        "m7-k00072 04:18 narrative (1): The score is 0–1.",
-        "  fan passed (1): The score is 0–1.",
+        "m7-k00026 01:27 narrative (1): The score is 0–0.",
+        "  fan passed (1): The score is 0–0.",
     ]
     s = json.loads((run_dir / "summary.json").read_text())
     fan = s["personas"]["fan"]
@@ -307,7 +319,7 @@ def test_explain_refuses_an_unknown_persona(capsys, tmp_path):
 
 
 def test_explain_stops_calling_once_max_calls_are_spent(fast, capsys, tmp_path):
-    args = ("--fake", "--until", "28:20", "--max-calls", "1")
+    args = ("--fake", "--until", UNTIL, "--max-calls", "1")
     code, out, _, run_dir = explain_run(capsys, tmp_path, *args)
     assert code == 0
     outcomes = [line.split()[2] for line in out.splitlines()[:3]]
@@ -317,7 +329,7 @@ def test_explain_stops_calling_once_max_calls_are_spent(fast, capsys, tmp_path):
 
 
 def test_explain_with_no_calls_allowed_gives_stats_only_cues(fast, capsys, tmp_path):
-    args = ("--fake", "--until", "28:20", "--max-calls", "0")
+    args = ("--fake", "--until", UNTIL, "--max-calls", "0")
     code, out, err, run_dir = explain_run(capsys, tmp_path, *args)
     assert code == 0
     assert out.splitlines()[-1].startswith("3 moments: 0 narratives, 3 stats-only, 0 crashed")
@@ -352,7 +364,7 @@ def test_a_moment_left_without_a_cue_exits_1(fast, capsys, tmp_path, monkeypatch
 
 
 def test_explain_reads_the_facts_over_mcp(fast, capsys, tmp_path, mcp_url):
-    args = ("--fake", "--until", "28:20", "--mcp", mcp_url)
+    args = ("--fake", "--until", UNTIL, "--mcp", mcp_url)
     code, out, _, run_dir = explain_run(capsys, tmp_path, *args)
     assert code == 0
     assert "3 attempts, 3 model calls (6 requests)" in out.splitlines()[-1]
@@ -362,7 +374,7 @@ def test_explain_reads_the_facts_over_mcp(fast, capsys, tmp_path, mcp_url):
 def test_explain_over_mcp_with_a_persona_makes_one_request_a_rendition(
     fast, capsys, tmp_path, mcp_url
 ):
-    args = ("--fake", "--until", "28:20", "--mcp", mcp_url, "--persona", "fan")
+    args = ("--fake", "--until", UNTIL, "--mcp", mcp_url, "--persona", "fan")
     code, out, _, run_dir = explain_run(capsys, tmp_path, *args)
     assert code == 0
     s = json.loads((run_dir / "summary.json").read_text())
@@ -434,7 +446,7 @@ def test_a_fatal_call_stops_the_run_with_exit_1_and_a_summary(fast, capsys, tmp_
     error = ChatClientException("Anthropic authentication failed")
     error.__cause__ = denied
     monkeypatch.setattr(analyst, "foundry_client", lambda deployment: FakeChatClient([error]))
-    code, out, err, run_dir = explain_run(capsys, tmp_path, "--until", "28:20", "--max-calls", "9")
+    code, out, err, run_dir = explain_run(capsys, tmp_path, "--until", UNTIL, "--max-calls", "9")
     assert code == 1
     assert "run stopped: AuthenticationError: Error code: 401" in err
     summary = json.loads((run_dir / "summary.json").read_text())

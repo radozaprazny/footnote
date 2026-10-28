@@ -30,6 +30,18 @@ One pipeline with the five stages of the challenge:
 | Render | Timed, machine-readable overlay cues stream next to a 2D pitch: lower thirds and a rail of cards, each with its evidence. |
 | Personalize | An Analyst or a Fan persona, a favourite club and English or Slovak: different experiences of the same verified facts. |
 
+**What the tracking is, and is not.** The matches come from generator v2
+(`src/matchlens/generator_v2.py`). Its decision layer, v1's, chooses who acts, how and with what
+outcome, tuned to the numbers of a match: passes, pass accuracy, shots and goals. A movement layer
+moves all 22 players every 100 ms toward targets, each under his own limits on speed and
+acceleration. The targets are a slot of the club's formation in and out of possession (four
+clubs, four formations, each with its own line height, press and width), pressing, marking, runs
+and the keeper's position, and every restart is laid out by the Laws of the Game. The events
+come from these simulated positions, and the 10 Hz tracking is these steps, not points drawn
+between events. It is not real data and not a learned model: there are no offsides, cards,
+substitutions or dribbles, and the ball moves in two dimensions. Generator v1
+(`src/matchlens/generator.py`) stays in the code.
+
 ## Architecture
 
 ```mermaid
@@ -98,22 +110,26 @@ replayed, audited and served without new model calls. A call that brings no draf
 failed attempt. A circuit breaker opens after 3 calls in a row that brought no answer at all.
 Each command (`explain`, `recap`, `translate`) has one budget, `--max-calls`, for the model
 requests of all the agents it runs, and the SDK retries nothing, so the budget sees every
-request it allows, and no request passes the cap. The one refusal in the demo runs shows the
-loop: the Guard refused a Slovak recap that judged the play without citing a reading
-(`phrase_not_cited`), and the Translator's second attempt passed
-(`demo/runs/m1/translate.sk.jsonl`).
+request it allows, and no request passes the cap. The demo runs show the loop three times, each
+text passing at its second attempt: the Guard refused a narrative whose claim said "are on top"
+without naming the club of the reading it cited (`phrase_not_cited`,
+`demo/runs/m1/handoffs.jsonl`), a fan rendition with the judgement word "lead"
+(`judgement_word`, `demo/runs/m0/handoffs.jsonl`) and a Slovak translation that judged the
+possession without its reading (`phrase_not_cited`, `demo/runs/m0/translate.sk.jsonl`).
 
 ## Measured results
 
-Real runs on Microsoft Foundry, 23 to 25 October 2026, three matches with 28 key moments:
+The demo's runs on Microsoft Foundry, 28 October 2026: Claude Sonnet 5.5 on generator v2's three
+matches with 35 key moments, the Analyst reading the facts over MCP:
 
 | What | Result |
 |---|---|
-| Narratives, Claude Sonnet 5.5 and Claude Haiku 5.5 | 28 of 28 each passed the Guard at the first attempt |
-| Fan renditions | 28 of 28 passed; 27 of 28 differ from their narrative |
+| Narratives | 34 of 35 passed the Guard at the first attempt, 35 of 35 at the second |
+| Fan renditions | 35 of 35 passed; 35 of 35 differ from their narrative |
 | Recaps and fan recaps | 3 of 3 each passed |
-| Slovak translations | 62 of 62 passed; one passed at its second attempt |
-| Time per narrative, Sonnet 5.5, with the MCP call | 4.85 s median, 5.66 s at the 95th percentile |
+| Slovak translations | 76 of 76 passed; one passed at its second attempt |
+| Time per narrative, its attempts and the MCP call | 4.73 s median, 9.24 s at the 95th percentile |
+| Generator v1's matches, 23 to 25 October, Sonnet 5.5 and Haiku 5.5 | 28 of 28 narratives each passed at the first attempt; the Sonnet runs are in `demo/runs-v1/` |
 
 And around them:
 
@@ -195,7 +211,8 @@ tests and takes about 20 minutes.
 | `src/matchlens/web/` | the page |
 | `src/matchlens/` | the generator, the facts, the MCP server, the API and the command line |
 | `tests/` | unit, property and end-to-end tests |
-| `demo/runs/` | the three logged runs the demo replays |
+| `demo/runs/` | the three logged runs the demo replays (generator v2, 28 October) |
+| `demo/runs-v1/` | generator v1's runs of 23 to 25 October, kept for the record; not served |
 | `deploy/`, `scripts/deploy.sh`, `docs/deploy.md` | the Azure Container Apps deployment and its runbook |
 | `PROGRESS.md` | the project's status, plan and measurements |
 

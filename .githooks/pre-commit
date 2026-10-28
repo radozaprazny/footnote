@@ -9,12 +9,26 @@ if git diff --cached --name-only | grep -Eq '(^|/)\.env($|\.)'; then
 fi
 
 tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
+judge=$(mktemp -d)
+trap 'rm -rf "$tmp" "$judge"' EXIT
 git checkout-index -a --prefix="$tmp/"
+# the judge and its test selection come from HEAD, so a commit cannot loosen either; the
+# selection sits beside the copy, so the tests of a changed selection still test the change,
+# and so does the staged ci.sh (CI_STAGED), which only tests/test_ci_script.py reads
+if [ -f "$tmp/scripts/ci.sh" ]; then
+  cp "$tmp/scripts/ci.sh" "$judge/ci.staged.sh"
+  export CI_STAGED="$judge/ci.staged.sh"
+fi
 if git cat-file -e HEAD:scripts/ci.sh 2>/dev/null; then
   git show HEAD:scripts/ci.sh > "$tmp/scripts/ci.sh"
 fi
-if ! out=$(bash "$tmp/scripts/ci.sh" 2>&1); then
+if git cat-file -e HEAD:.claude/hooks/select_tests.py 2>/dev/null; then
+  git show HEAD:.claude/hooks/select_tests.py > "$judge/select_tests.py"
+  export CI_SELECT="$judge/select_tests.py"
+fi
+# only the tests of the staged files (owner decision, 27 Oct); the full suite runs in GitHub CI
+# and before a merge into main or a deploy
+if ! out=$(git diff --cached --name-only --no-renames | bash "$tmp/scripts/ci.sh" --changed 2>&1); then
   echo "$out" | tail -n 40 >&2
   echo "pre-commit: local CI is red, commit refused." >&2
   exit 1

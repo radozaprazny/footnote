@@ -79,8 +79,10 @@ def test_the_pitch_numbers_stand_in_their_metrics_rows():
     """Each measured claim of the pitch is the value of its row in PROGRESS.md's Metrics."""
     measured = pasted("Description").split("**Measured.**", 1)[1].split("\n\n", 1)[0]
     claims = {
+        "34 of 35": "Demo runs, generator v2 (M9 item 8)",
+        "35 of 35": "Demo runs, generator v2 (M9 item 8)",
+        "76 of 76": "Demo runs, generator v2 (M9 item 8)",
         "28 of 28": "Guard pass rate",
-        "62 of 62": "Slovak translations (M5 item 6)",
         "€3.43": "Cost, October to 25 Oct",
     }
     for claim, label in claims.items():
@@ -89,18 +91,25 @@ def test_the_pitch_numbers_stand_in_their_metrics_rows():
     guard = metrics_row("Guard pass rate")
     assert "Haiku 5.5: 28 of 28 first attempt" in guard and "Sonnet 5.5: 28 of 28," in guard
     assert "every model call of M3–M5) €3.43" in metrics_row("Cost, October to 25 Oct")
-    # no other number: 28 of 28, the models 5.5, 62 of 62, 25 October, €3.43
+    # no other number: v2's 34 of 35 and 35 of 35 on Sonnet 5.5, 76 of 76; v1's 28 of 28 on both
+    # models 5.5; 25 October, €3.43
     assert re.findall(r"\d+(?:\.\d+)?", measured) == [
+        "34",
+        "35",
+        "5.5",
+        "35",
+        "35",
+        "76",
+        "76",
         "28",
         "28",
         "5.5",
         "5.5",
-        "62",
-        "62",
         "25",
         "3.43",
     ]
-    assert "61 at the first attempt" in metrics_row("Slovak translations (M5 item 6)")
+    demo = metrics_row("Demo runs, generator v2 (M9 item 8)")
+    assert "Slovak translations 76 of 76 passed, 1 at its second attempt" in demo
     assert "one after a retry" in measured
 
 
@@ -157,14 +166,15 @@ def test_the_terminal_shot_shows_the_refusal_and_the_retry():
     ).stdout.splitlines()
     assert len(out) == 4
     assert out[0] == "False ['phrase_not_cited']"
-    assert out[1].endswith("Saltreach FC má 59% navrch.")
+    assert out[1].endswith("Vellbridge Town má viac lopty 58%.")
     assert out[2] == "True []"
-    assert out[3].endswith("momentum Saltreach FC je 59%.")
-    assert "Saltreach FC má 59% navrch" in DOC and "momentum Saltreach FC je 59%" in DOC
+    assert out[3].endswith("Vellbridge Town drží loptu na 58%.")
+    assert "Vellbridge Town má viac lopty 58%" in DOC and "Vellbridge Town drží loptu na 58%" in DOC
 
 
-def test_it_is_the_one_refusal_of_the_demo_runs():
-    """Across every log of the demo runs, one attempt was refused: the one the video shows."""
+def test_the_demo_runs_have_three_refusals_and_the_video_shows_one():
+    """Across every log of v2's demo runs, three attempts were refused, each once (the README
+    names them); the video shows the Slovak translation's."""
     refused = set()
     for log in sorted((REPO / "demo" / "runs").glob("*/*.jsonl")):
         for line in log.read_text(encoding="utf-8").splitlines():
@@ -176,7 +186,12 @@ def test_it_is_the_one_refusal_of_the_demo_runs():
                     if verdict and not verdict["passed"]:
                         key = (state["match_id"], state["moment_id"], attempt["draft"]["text"])
                         refused.add(key)
-    assert [k[:2] for k in refused] == [("m1", "recap")]
+    assert sorted(k[:2] for k in refused) == [
+        ("m0", "m0-k00272"),
+        ("m0", "m0-k00391"),
+        ("m1", "m1-k00773"),
+    ]
+    assert "'m0-k00272'" in DOC
 
 
 def test_the_video_s_cost_is_the_metrics_one():
@@ -184,7 +199,7 @@ def test_the_video_s_cost_is_the_metrics_one():
     row = metrics_row("Cost, October to 25 Oct")
     claude = float(re.search(r"every model call of M3–M5\) €(\d+\.\d+)", row)[1])
     assert round(claude * 2) / 2 == 3.5
-    assert "about three and a half euros" in DOC
+    assert "through 25 October cost about three and a half euros" in DOC
 
 
 def test_the_published_texts_name_no_real_club_or_player():

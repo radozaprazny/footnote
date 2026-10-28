@@ -22,9 +22,10 @@ DEPLOY = REPO / "scripts" / "deploy.sh"
 RUNBOOK = REPO / "docs" / "deploy.md"
 # measured at 0.25 vCPU on the devbox (PROGRESS.md, Metrics: Container, Readiness and stop, and
 # Container, M5 demo runs)
-# longest start to /healthz, 25 Oct: since M5 the runs' replay check computes every overlay
-# before the bind (29.9 s on 23 Oct, when the cue timelines were computed after it)
-COLD_START_S = 211.8
+# longest start to /healthz: 420.1 s on 28 Oct with generator v2's three matches (M9 item 8;
+# 211.8 s on 25 Oct with v1's, since M5 the runs' replay check computing every overlay before the
+# bind; 29.9 s on 23 Oct, when the cue timelines were computed after it)
+COLD_START_S = 420.1
 PROBE_MAX_S = 1.59  # longest /readyz answer during the warm-up
 READY_LIMIT_S = int(
     re.search(r"^ready_limit_s=(\d+)", (REPO / "scripts/container.sh").read_text(), re.M)[1]
@@ -63,13 +64,18 @@ def test_the_probes_ask_the_server_on_its_port():
 def test_the_probes_outlast_the_measured_start():
     """Each probe waits longer than the slowest answer measured; the startup probe gives the
     cold start three times its longest, and readiness gives the warm-up at least the window
-    container.sh holds a 0.25 vCPU container to (every match streaming within 240 s)."""
+    container.sh holds a 0.25 vCPU container to (every match streaming within 480 s since
+    generator v2; 240 s before, owner 28 Oct)."""
     kinds = probes()
     assert min(p["timeoutSeconds"] for p in kinds.values()) >= 2 > PROBE_MAX_S
     assert all(p["timeoutSeconds"] <= p["periodSeconds"] for p in kinds.values())
     assert window(kinds["Startup"]) >= 3 * COLD_START_S
     assert COLD_START_S < READY_LIMIT_S  # container.sh waits that long for /healthz
-    assert window(kinds["Readiness"]) >= READY_LIMIT_S == 240
+    assert window(kinds["Readiness"]) >= READY_LIMIT_S == 480
+    # ACA refuses a readiness or liveness threshold above 48 (ContainerAppProbeFailureThreshold
+    # OutOfRange, 28 Oct); the startup probe's 240 is ACA's own default
+    assert all(1 <= kinds[k]["failureThreshold"] <= 48 for k in ("Readiness", "Liveness"))
+    assert 1 <= kinds["Startup"]["failureThreshold"] <= 240
     assert kinds["Readiness"]["successThreshold"] == 1
 
 
